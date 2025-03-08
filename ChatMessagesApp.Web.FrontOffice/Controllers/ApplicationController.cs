@@ -21,7 +21,6 @@ public class ApplicationController(IMediator mediator) : ControllerBase
         return Ok(demandDto);
     }
 
-    [Authorize]
     [HttpGet("demands")]
     public async Task<ActionResult<List<GetDemandsDto>>> GetDemands()
     {
@@ -29,7 +28,6 @@ public class ApplicationController(IMediator mediator) : ControllerBase
         return Ok(demands);
     }
 
-    [Authorize]
     [HttpGet("demand/{id}")]
     public async Task<ActionResult<GetDemandsDto>> GetDemand(Guid id)
     {
