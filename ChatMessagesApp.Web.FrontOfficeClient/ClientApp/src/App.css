@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+.btnGreen {
+	border-radius: 8px !important;
+	background-color: rgb(58, 162, 58) !important;
+	border: 0 !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 10px !important;
+	font-weight: 500 !important;
+	color: antiquewhite;
+	width: fit-content !important;
+	margin-inline-start: auto;
+	margin-inline-end: 0;
+}

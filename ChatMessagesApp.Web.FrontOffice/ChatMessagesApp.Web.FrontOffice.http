@@ -1,0 +1,6 @@
+@ChatMessagesApp.Web.FrontOffice_HostAddress = http://localhost:5001
+
+GET {{ChatMessagesApp.Web.FrontOffice_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
