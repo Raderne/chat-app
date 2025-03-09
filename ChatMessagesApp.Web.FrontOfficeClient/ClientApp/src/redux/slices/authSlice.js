@@ -9,9 +9,9 @@ const authSlice = createSlice({
 	name: "auth",
 	initialState,
 	reducers: {
-		setValues(state, { payload }) {
-			state.userName = payload.userName;
-			state.token = payload.token;
+		setValues(state, action) {
+			state.userName = action.payload.userName;
+			state.token = action.payload.token;
 			localStorage.setItem("userName", state.userName);
 			localStorage.setItem("token", state.token);
 		},

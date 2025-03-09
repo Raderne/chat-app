@@ -60,13 +60,23 @@ public static class IdentityDependencyInjection
                 {
                     OnMessageReceived = context =>
                     {
-                        var accessToken = context.Request.Query["token"];
+                        var authorization = context.Request.Headers["Authorization"].ToString();
+                        var accessToken = string.Empty;
+
+                        if (authorization.StartsWith("Bearer ", System.StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(authorization))
+                        {
+                            accessToken = authorization.Substring("Bearer ".Length).Trim();
+                        }
+                        else
+                        {
+                            accessToken = context.Request.Query["access_token"];
+                        }
 
                         Console.WriteLine($"Access token: {accessToken}");
 
                         if (!string.IsNullOrEmpty(accessToken))
                         {
-                            context.Token = accessToken;
+                            //context.Token = accessToken;
                             var token = new JwtSecurityToken(accessToken);
                             var claims = new ClaimsIdentity(token.Claims);
                             context.HttpContext.User = new ClaimsPrincipal(claims);

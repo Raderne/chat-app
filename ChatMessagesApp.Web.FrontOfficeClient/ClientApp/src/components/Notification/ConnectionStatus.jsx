@@ -1,10 +1,11 @@
 import { useSelector } from "react-redux";
-import { selectConnectionStatus } from "../../redux/selectors/notificationSelectors";
 
 const ConnectionStatus = () => {
-	const status = useSelector(selectConnectionStatus);
+	const { status: connectionStatus } = useSelector(
+		(state) => state.notification,
+	);
 
-	return <div>{status.toUpperCase()}</div>;
+	return <div>{connectionStatus.toUpperCase()}</div>;
 };
 
 export default ConnectionStatus;

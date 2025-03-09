@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import TextInput from "../formInputs/TextInput";
 import SelectInput from "../formInputs/SelectInput";
-import { useDispatch, useSelector } from "react-redux";
-import { sendNotification } from "../../services/notificationService";
+import { useSelector } from "react-redux";
+import { useSignalR } from "../../context/SignalRContext";
 
 const URL = import.meta.env.VITE_API_BASE_URL;
 
 const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 	const [users, setUsers] = useState([]);
-	const { connectionStatus } = useSelector((state) => state.notification);
-	const dispatch = useDispatch();
+	const { status: connectionStatus } = useSelector(
+		(state) => state.notification,
+	);
+	const { connection, invoke } = useSignalR();
 
 	const handleSubmitForm = async (values) => {
 		try {
@@ -44,13 +46,14 @@ const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 				description: "Demand added successfully",
 			});
 
-			if (connectionStatus === "connected") {
-				dispatch(
-					sendNotification(
-						values.notifyUserId,
-						"New demand has been added to the system by " +
-							users.find((user) => user.id === values.notifyUserId).firstName,
-					),
+			if (connectionStatus === "connected" && connection) {
+				await invoke(
+					"NotifyUserAsync",
+					"DemandCreated",
+					values.notifyUserId,
+					`New demand created: ${values.title} by ${
+						users.find((user) => user.id === values.notifyUserId).firstName
+					}`,
 				);
 			}
 

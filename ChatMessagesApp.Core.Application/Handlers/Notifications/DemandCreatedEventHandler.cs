@@ -18,7 +18,7 @@ public class DemandCreatedEventHandler(
         var demand = notification.DomainEvent.CreatedDemand;
 
         await _notificationService.NotifyUserAsync(
-            demand.CreatedBy,
+            demand.CreatedByUserId,
             NotificationType.DemandCreated,
             $"Demand {demand.Title} has been created.");
     }

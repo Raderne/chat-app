@@ -46,20 +46,18 @@ builder.Services.AddSwaggerGen(cfg =>
     );
 });
 
-var origins = builder.Configuration.GetValue("AllowedOrigins", string.Empty)!.Split(",");
+//var origins = builder.Configuration.GetValue("AllowedOrigins", string.Empty)!.Split(",");
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
         builder =>
         {
-            builder.WithOrigins(origins)
-            .SetIsOriginAllowedToAllowWildcardSubdomains()
+            builder.WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
             .AllowCredentials()
+            .SetIsOriginAllowed((host) => true)
             .AllowAnyHeader();
-
-            builder.AllowAnyHeader();
-            builder.AllowAnyMethod();
         });
 });
 
@@ -73,10 +71,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ChatMessagesApp.Web.FrontOffice v1"));
 }
 app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
-
-app.UseCors("AllowAllOrigins");
 
 app.MapControllers();
 app.MapHub<NotificationHub>("/notificationHub");

@@ -1,9 +1,9 @@
-import { Button, Col, Row } from "antd";
+import { Button } from "antd";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import TextInput from "../components/formInputs/TextInput";
 import PasswordInput from "../components/formInputs/PasswordInput";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setValues } from "../redux/slices/authSlice";
 
@@ -12,8 +12,10 @@ const URL = import.meta.env.VITE_API_BASE_URL + "api/users/login";
 const Login = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const auth = useSelector((state) => state.auth);
 
 	const login = async (values) => {
+		console.log(auth);
 		try {
 			const response = await fetch(
 				import.meta.env.VITE_API_BASE_URL + "api/users/login",
@@ -27,11 +29,12 @@ const Login = () => {
 			);
 			const data = await response.json();
 
-			if (response.ok) {
+			if (data?.token) {
+				console.log(data);
 				dispatch(setValues(data));
 				navigate("/");
 			} else {
-				alert(data.message);
+				alert("Invalid email or password");
 			}
 		} catch (error) {
 			console.error(error);

@@ -82,7 +82,7 @@ public class IdentityService(
                 issuer: configuration["JWT:Issuer"],
                 audience: configuration["JWT:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddDays(30),
                 signingCredentials: credentials
             );
 

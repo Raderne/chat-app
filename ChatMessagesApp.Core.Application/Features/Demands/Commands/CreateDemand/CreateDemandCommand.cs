@@ -24,7 +24,7 @@ public class CreateDemandCommandHandler(
 
     public async Task<CreateDemandDto> Handle(CreateDemandCommand request, CancellationToken cancellationToken)
     {
-        var demand = new Demand(request.Title, request.Description, _currentUserService.UserId);
+        var demand = new Demand(request.Title, request.Description, request.NotifyUserId);
 
         var notification = new Notification()
         {
