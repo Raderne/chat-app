@@ -6,12 +6,10 @@ using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Handlers.Notifications;
 
-public class DemandCreatedEventHandler(
-    INotificationService notificationService,
-    IContext context) : INotificationHandler<DomainEventNotification<DemandCreatedEvent>>
+public class DemandCreatedEventHandler(INotificationService notificationService)
+    : INotificationHandler<DomainEventNotification<DemandCreatedEvent>>
 {
     private readonly INotificationService _notificationService = notificationService;
-    private readonly IContext _context = context;
 
     public async Task Handle(DomainEventNotification<DemandCreatedEvent> notification, CancellationToken cancellationToken)
     {

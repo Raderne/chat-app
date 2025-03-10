@@ -47,14 +47,7 @@ const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 			});
 
 			if (connectionStatus === "connected" && connection) {
-				await invoke(
-					"NotifyUserAsync",
-					"DemandCreated",
-					values.notifyUserId,
-					`New demand created: ${values.title} by ${
-						users.find((user) => user.id === values.notifyUserId).firstName
-					}`,
-				);
+				await invoke("NotifyUserAsync");
 			}
 
 			handleCloseModal(true);

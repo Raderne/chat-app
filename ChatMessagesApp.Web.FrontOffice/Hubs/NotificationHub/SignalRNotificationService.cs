@@ -35,7 +35,8 @@ public class SignalRNotificationService(
         {
             Type = type,
             Message = message,
-            DocumentId = documentId
+            DocumentId = documentId,
+            TimeStamp = DateTime.UtcNow
         };
 
         var connectionIds = _userConnections.GetConnections(userId);

@@ -25,34 +25,32 @@ public class ApplicationContext(
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        string userId = null;
-        if (_currentUserService.IsLoggedIn())
-        {
-            userId = $"{_currentUserService.UserId}:{_currentUserService.UserName}:{_currentUserService.PreferedUserName}";
-        }
+        string userId = _currentUserService.IsLoggedIn()
+            ? $"{_currentUserService.UserId}:{_currentUserService.UserName}:{_currentUserService.PreferedUserName}"
+            : "Anonymous";
+
+        var currentTime = DateTime.UtcNow;
 
         foreach (var entry in ChangeTracker.Entries<IAuditableEntity<string>>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.CreatedBy = userId ?? "Anonymous";
-                    entry.Entity.Created = DateTime.UtcNow;
-                    entry.Entity.LastModifiedBy = userId ?? "Anonymous";
-                    entry.Entity.LastModified = DateTime.UtcNow;
+                    entry.Entity.CreatedBy = userId;
+                    entry.Entity.Created = currentTime;
+                    entry.Entity.LastModifiedBy = userId;
+                    entry.Entity.LastModified = currentTime;
                     break;
                 case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = userId ?? "Anonymous";
-                    entry.Entity.LastModified = DateTime.UtcNow;
-                    break;
-                default:
+                    entry.Entity.LastModifiedBy = userId;
+                    entry.Entity.LastModified = currentTime;
                     break;
             }
         }
 
         var domainEventEntities = ChangeTracker.Entries<Demand>()
-            .Select(po => po.Entity)
-            .Where(po => po.DomainEvents.Any())
+            .Select(d => d.Entity)
+            .Where(d => d.DomainEvents.Any())
             .ToArray();
 
         var result = await base.SaveChangesAsync(cancellationToken);

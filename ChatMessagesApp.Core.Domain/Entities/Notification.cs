@@ -8,6 +8,6 @@ public class Notification : BaseEntity<Guid>
     public string UserId { get; set; } // Target user
     public NotificationType Type { get; set; }
     public string Message { get; set; }
-    public Guid? RelatedDocumentId { get; set; } // Optional link to documents
+    public Guid? RelatedDocumentId { get; set; }
     public bool IsRead { get; set; }
 }
