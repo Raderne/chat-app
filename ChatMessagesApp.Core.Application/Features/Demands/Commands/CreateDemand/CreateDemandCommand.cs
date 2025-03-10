@@ -30,7 +30,7 @@ public class CreateDemandCommandHandler(
         {
             UserId = request.NotifyUserId,
             Type = NotificationType.DemandCreated,
-            Message = $"You have a new demand from {_currentUserService.UserId}",
+            Message = $"You have a new demand from {_currentUserService.UserName}",
             RelatedDocumentId = demand.Id
         };
 
