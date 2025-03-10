@@ -3,10 +3,7 @@ using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Features.Messages.Queries.GetConversation;
 
-public class GetConversationQuery : IRequest<GetConversationDto>
-{
-    public Guid DemandId { get; set; }
-}
+public record GetConversationQuery(Guid DemandId) : IRequest<GetConversationDto>;
 
 public class GetConversationQueryHandler(IConversationService conversationService) : IRequestHandler<GetConversationQuery, GetConversationDto>
 {
