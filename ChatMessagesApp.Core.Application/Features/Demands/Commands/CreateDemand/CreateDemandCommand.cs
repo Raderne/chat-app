@@ -25,6 +25,7 @@ public class CreateDemandCommandHandler(
     public async Task<CreateDemandDto> Handle(CreateDemandCommand request, CancellationToken cancellationToken)
     {
         var demand = new Demand(request.Title, request.Description, request.NotifyUserId);
+        _context.Demands.Add(demand);
 
         var notification = new Notification()
         {
@@ -33,9 +34,8 @@ public class CreateDemandCommandHandler(
             Message = $"You have a new demand from {_currentUserService.UserName}",
             RelatedDocumentId = demand.Id
         };
-
-        _context.Demands.Add(demand);
         _context.Notifications.Add(notification);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<CreateDemandDto>(demand);

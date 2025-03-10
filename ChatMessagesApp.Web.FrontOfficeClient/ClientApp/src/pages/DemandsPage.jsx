@@ -2,6 +2,8 @@ import { Button, Col, notification, Row, Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import AddDemand from "../components/forms/AddDemand";
+import { useSelector } from "react-redux";
+import { selectNotifications } from "../redux/selectors/notificationSelectors";
 
 const INITIAL_VALUES = {
 	title: "",
@@ -17,6 +19,7 @@ const DemandsPage = () => {
 	const [demands, setDemands] = useState([]);
 	const [demand, setDemand] = useState(INITIAL_VALUES);
 	const token = localStorage.getItem("token") || "";
+	const notifications = useSelector(selectNotifications);
 
 	const fetchDemands = async () => {
 		try {
@@ -47,6 +50,16 @@ const DemandsPage = () => {
 	useEffect(() => {
 		fetchDemands();
 	}, []);
+
+	useEffect(() => {
+		if (notifications.length) {
+			api.open({
+				message: "Notification",
+				description: notifications[notifications.length - 1].message,
+				placement: "bottomRight",
+			});
+		}
+	}, [notifications, api]);
 
 	const openModal = () => {
 		setDemand({ ...INITIAL_VALUES, isModalVisible: true });

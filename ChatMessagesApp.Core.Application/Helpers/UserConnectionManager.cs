@@ -27,6 +27,13 @@ public class UserConnectionManager : IUserConnectionManager
     }
 }
 
+//builder.Services.AddSignalR();
+
+//// Configure Redis
+//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("your_redis_connection_string"));
+
+//builder.Services.AddSignalR().AddStackExchangeRedis("your_redis_connection_string");
+
 //   dotnet add package StackExchange.Redis
 
 //   using ChatMessagesApp.Core.Application.Interfaces;

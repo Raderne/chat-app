@@ -5,6 +5,8 @@ import { logout } from "../redux/slices/authSlice";
 import { NotificationOutlined } from "@ant-design/icons";
 import Notifications from "../components/Notification/Notifications";
 import { useState } from "react";
+import { selectPoke } from "../redux/selectors/notificationSelectors";
+import { resetPoke } from "../redux/slices/notificationSlice";
 
 const { Header, Content } = Layout;
 
@@ -16,6 +18,7 @@ const Dashboard = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [openNotification, setOpenNotification] = useState(false);
+	const poke = useSelector(selectPoke);
 
 	return (
 		<Layout className="!min-h-screen">
@@ -24,14 +27,17 @@ const Dashboard = () => {
 					<h1 className="text-2xl font-bold">Dashboard</h1>
 
 					<div className="flex items-center space-x-2">
-						{/* notification icon that opens Notification component */}
 						<Button
 							type="primary"
 							onClick={() => {
 								setOpenNotification(!openNotification);
+								dispatch(resetPoke());
 							}}
 						>
 							<NotificationOutlined />
+							{poke && (
+								<span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-red-400"></span>
+							)}
 						</Button>
 
 						{/* Notification component */}

@@ -5,6 +5,7 @@ const initialState = {
 	connectionStatus: "disconnected",
 	notifications: [],
 	error: null,
+	poke: false,
 };
 
 const URL = import.meta.env.VITE_API_BASE_URL + "notificationHub";
@@ -35,7 +36,11 @@ const notificationSlice = createSlice({
 	initialState,
 	reducers: {
 		notificationReceived: (state, action) => {
-			state.notifications.push(action.payload);
+			state.notifications.unshift(action.payload);
+			state.poke = true;
+		},
+		resetPoke: (state) => {
+			state.poke = false;
 		},
 	},
 	extraReducers: (builder) => {
@@ -54,6 +59,6 @@ const notificationSlice = createSlice({
 	},
 });
 
-export const { notificationReceived } = notificationSlice.actions;
+export const { notificationReceived, resetPoke } = notificationSlice.actions;
 
 export default notificationSlice.reducer;
