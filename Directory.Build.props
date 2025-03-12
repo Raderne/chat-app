@@ -1,0 +1,36 @@
+<Project>
+
+  <PropertyGroup>
+	<TargetFramework>net8.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MicrosoftAspNetCorePackageVersion>8.0.1</MicrosoftAspNetCorePackageVersion>
+    <MicrosoftEntityFrameworkCorePackageVersion>8.0.1</MicrosoftEntityFrameworkCorePackageVersion>
+    <MicrosoftExtensionsPackageVersion>8.0.0</MicrosoftExtensionsPackageVersion>
+    <MicrosoftExtensionsFileProvidersVersion>8.0.1</MicrosoftExtensionsFileProvidersVersion>
+    <MicrosoftVisualStudioPackageVersion>8.0.1</MicrosoftVisualStudioPackageVersion>
+    <MicrosoftExtensionsApiDescriptionClient>9.0.0</MicrosoftExtensionsApiDescriptionClient>
+    <FluentValidationPackageVersion>11.4.0</FluentValidationPackageVersion>
+    <NpgsqlPackageVersion>8.0.0</NpgsqlPackageVersion>
+    <NuGetPackageVersion>5.10.0</NuGetPackageVersion>
+    <SystemCodeDomPackageVersion>8.0.0</SystemCodeDomPackageVersion>
+    <AutoMapperPackageVersion>12.0.1</AutoMapperPackageVersion>
+    <NewtonsoftJsonPackageVersion>13.0.3</NewtonsoftJsonPackageVersion>
+    <NSwagPackageVersion>14.0.2</NSwagPackageVersion>
+    <OcelotPackageVersion>18.0.0</OcelotPackageVersion>
+    <OpenIddictPackageVersion>3.1.1</OpenIddictPackageVersion>
+    <MediatRPackageVersion>11.1.0</MediatRPackageVersion>
+    <QuartzPackageVersion>3.5.0</QuartzPackageVersion>
+    <BogusPackageVersion>33.1.1</BogusPackageVersion>
+    <RefitPackageVersion>6.3.2</RefitPackageVersion>
+    <HealthChecksPackageVersion>8.0.1</HealthChecksPackageVersion>
+    <SemverPackageVersion>2.3.0</SemverPackageVersion>
+    <NSwagApiDescriptionClient>14.2.0</NSwagApiDescriptionClient>
+	<SignalRCoreVersion>1.2.0</SignalRCoreVersion>
+    
+  </PropertyGroup>
+
+</Project>

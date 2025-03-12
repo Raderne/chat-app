@@ -1,7 +1,7 @@
 ﻿using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Application.Models.Notification;
-using ChatMessagesApp.Core.Domain.Common;
 using ChatMessagesApp.Core.Domain.Enums;
+using ChatMessagesApp.Core.Domain.Events;
 using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Handlers.Notifications;

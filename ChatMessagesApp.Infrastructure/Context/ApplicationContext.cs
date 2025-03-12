@@ -15,6 +15,8 @@ public class ApplicationContext(
 
     public DbSet<Demand> Demands { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Conversation> Conversations { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,8 +55,6 @@ public class ApplicationContext(
             .Where(d => d.DomainEvents.Any())
             .ToArray();
 
-        var result = await base.SaveChangesAsync(cancellationToken);
-
         foreach (var entity in domainEventEntities)
         {
             var latestDomainEvent = entity.DomainEvents.LastOrDefault();
@@ -64,6 +64,8 @@ public class ApplicationContext(
                 entity.ClearDomainEvents();
             }
         }
+
+        var result = await base.SaveChangesAsync(cancellationToken);
 
         return result;
     }

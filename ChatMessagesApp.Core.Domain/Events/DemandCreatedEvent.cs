@@ -1,6 +1,7 @@
-﻿using ChatMessagesApp.Core.Domain.Entities;
+﻿using ChatMessagesApp.Core.Domain.Common;
+using ChatMessagesApp.Core.Domain.Entities;
 
-namespace ChatMessagesApp.Core.Domain.Common;
+namespace ChatMessagesApp.Core.Domain.Events;
 
 public class DemandCreatedEvent : DomainEvent
 {
