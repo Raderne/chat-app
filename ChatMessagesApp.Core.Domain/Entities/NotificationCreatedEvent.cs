@@ -1,7 +1,6 @@
 ﻿using ChatMessagesApp.Core.Domain.Common;
-using ChatMessagesApp.Core.Domain.Entities;
 
-namespace ChatMessagesApp.Core.Domain.DomainEvents;
+namespace ChatMessagesApp.Core.Domain.Entities;
 
 public class NotificationCreatedEvent : DomainEvent
 {
