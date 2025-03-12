@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMessagesApp.Core.Domain", "ChatMessagesApp.Core.Domain\ChatMessagesApp.Core.Domain.csproj", "{D0733B7C-1FB9-4454-93D0-819CC55E591A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMessagesApp.Core.Application", "ChatMessagesApp.Core.Application\ChatMessagesApp.Core.Application.csproj", "{4FCE14F0-0C94-4DDF-B44E-AC5DF423E67C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMessagesApp.Web.FrontOffice", "ChatMessagesApp.Web.FrontOffice\ChatMessagesApp.Web.FrontOffice.csproj", "{033AD7F8-5708-4F3E-BA7D-FB46362341B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMessagesApp.Infrastructure", "ChatMessagesApp.Infrastructure\ChatMessagesApp.Infrastructure.csproj", "{CD393995-C418-4BBB-A0BA-B4494B23650D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMessagesApp.Core.Common", "ChatMessagesApp.Core.Common\ChatMessagesApp.Core.Common.csproj", "{469795EC-1352-4AC6-83F3-DC0186B56128}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "webclients", "webclients", "{547D2D13-8186-4EC9-8571-35E7FF60ED24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMessagesApp.Web.FrontOfficeClient", "ChatMessagesApp.Web.FrontOfficeClient\ChatMessagesApp.Web.FrontOfficeClient.csproj", "{CC16AA41-920A-48C8-B4B1-072AE7CE6948}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0733B7C-1FB9-4454-93D0-819CC55E591A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0733B7C-1FB9-4454-93D0-819CC55E591A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0733B7C-1FB9-4454-93D0-819CC55E591A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0733B7C-1FB9-4454-93D0-819CC55E591A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FCE14F0-0C94-4DDF-B44E-AC5DF423E67C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FCE14F0-0C94-4DDF-B44E-AC5DF423E67C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FCE14F0-0C94-4DDF-B44E-AC5DF423E67C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FCE14F0-0C94-4DDF-B44E-AC5DF423E67C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{033AD7F8-5708-4F3E-BA7D-FB46362341B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{033AD7F8-5708-4F3E-BA7D-FB46362341B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{033AD7F8-5708-4F3E-BA7D-FB46362341B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{033AD7F8-5708-4F3E-BA7D-FB46362341B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD393995-C418-4BBB-A0BA-B4494B23650D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD393995-C418-4BBB-A0BA-B4494B23650D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD393995-C418-4BBB-A0BA-B4494B23650D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD393995-C418-4BBB-A0BA-B4494B23650D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{469795EC-1352-4AC6-83F3-DC0186B56128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{469795EC-1352-4AC6-83F3-DC0186B56128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{469795EC-1352-4AC6-83F3-DC0186B56128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{469795EC-1352-4AC6-83F3-DC0186B56128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC16AA41-920A-48C8-B4B1-072AE7CE6948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC16AA41-920A-48C8-B4B1-072AE7CE6948}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC16AA41-920A-48C8-B4B1-072AE7CE6948}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC16AA41-920A-48C8-B4B1-072AE7CE6948}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CC16AA41-920A-48C8-B4B1-072AE7CE6948} = {547D2D13-8186-4EC9-8571-35E7FF60ED24}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54B154E3-E3CD-4DFD-A4F7-B2EE4DEBF78B}
+	EndGlobalSection
+EndGlobal
