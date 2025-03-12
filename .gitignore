@@ -24,8 +24,3 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-
-.env
-
-appsettings.Development.json
-appsettings.json
