@@ -1,7 +1,7 @@
 ﻿using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Application.Models.Notification;
 using ChatMessagesApp.Core.Domain.Enums;
-using ChatMessagesApp.Web.FrontOffice.Hubs.NotificationHub;
+using ChatMessagesApp.Web.FrontOffice.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatMessagesApp.Infrastructure.Services;

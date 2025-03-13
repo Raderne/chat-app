@@ -3,7 +3,7 @@ using ChatMessagesApp.Core.Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChatMessagesApp.Web.FrontOffice.Hubs.Chat;
+namespace ChatMessagesApp.Web.FrontOffice.Hubs;
 
 public class MessagingHub(
     IMediator mediator,

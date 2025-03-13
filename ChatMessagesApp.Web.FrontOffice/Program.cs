@@ -3,7 +3,7 @@ using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Common;
 using ChatMessagesApp.Infrastructure;
 using ChatMessagesApp.Infrastructure.Services;
-using ChatMessagesApp.Web.FrontOffice.Hubs.NotificationHub;
+using ChatMessagesApp.Web.FrontOffice.Hubs;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,5 +77,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<MessagingHub>("/messagingHub");
 
 app.Run();

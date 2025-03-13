@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
-namespace ChatMessagesApp.Web.FrontOffice.Hubs.NotificationHub;
+namespace ChatMessagesApp.Web.FrontOffice.Hubs;
 
 public class NotificationHub(
     IUserConnectionManager userConnectionManager,
