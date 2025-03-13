@@ -15,7 +15,6 @@ public class ApplicationContext(
 
     public DbSet<Demand> Demands { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Conversation> Conversations { get; set; }
     public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,6 +22,30 @@ public class ApplicationContext(
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Ignore<DomainEvent>();
+
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => m.IsRead)
+            .HasDatabaseName("IX_Message_IsRead");
+
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => m.DemandId)
+            .HasDatabaseName("IX_Message_DemandId");
+
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => m.SenderId)
+            .HasDatabaseName("IX_Message_SenderId");
+
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => m.RecipientId)
+            .HasDatabaseName("IX_Message_RecipientId");
+
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => new { m.SenderId, m.RecipientId })
+            .HasDatabaseName("IX_Message_SenderId_RecipientId");
+
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => m.Created)
+            .HasDatabaseName("IX_Message_Created");
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

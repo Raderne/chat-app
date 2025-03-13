@@ -4,6 +4,7 @@ using ChatMessagesApp.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatMessagesApp.Infrastructure.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250313092645_AddChatEntites")]
+    partial class AddChatEntites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,54 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Conversation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DemandId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InitiatorUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid?>("Uuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DemandId", "InitiatorUserId", "ReceiverUserId")
+                        .HasDatabaseName("IX_Conversation_Demand_Initiator_Receiver");
+
+                    b.ToTable("Conversations");
+                });
 
             modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Demand", b =>
                 {
@@ -78,15 +129,15 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("DemandId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
@@ -101,10 +152,6 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RecipientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<byte[]>("RowVersion")
                         .HasColumnType("varbinary(max)");
 
@@ -117,23 +164,11 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Created")
-                        .HasDatabaseName("IX_Message_Created");
-
-                    b.HasIndex("DemandId")
-                        .HasDatabaseName("IX_Message_DemandId");
-
                     b.HasIndex("IsRead")
                         .HasDatabaseName("IX_Message_IsRead");
 
-                    b.HasIndex("RecipientId")
-                        .HasDatabaseName("IX_Message_RecipientId");
-
-                    b.HasIndex("SenderId")
-                        .HasDatabaseName("IX_Message_SenderId");
-
-                    b.HasIndex("SenderId", "RecipientId")
-                        .HasDatabaseName("IX_Message_SenderId_RecipientId");
+                    b.HasIndex("ConversationId", "SenderId")
+                        .HasDatabaseName("IX_Message_Conversation_Sender");
 
                     b.ToTable("Messages");
                 });
@@ -187,6 +222,33 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                     b.HasKey("Id");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Conversation", b =>
+                {
+                    b.HasOne("ChatMessagesApp.Core.Domain.Entities.Demand", "Demand")
+                        .WithMany()
+                        .HasForeignKey("DemandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Demand");
+                });
+
+            modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Message", b =>
+                {
+                    b.HasOne("ChatMessagesApp.Core.Domain.Entities.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+                });
+
+            modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
