@@ -1,9 +1,11 @@
 ﻿using ChatMessagesApp.Core.Application.Features;
 using ChatMessagesApp.Core.Application.Features.Demands.Commands.CreateDemand;
 using ChatMessagesApp.Core.Application.Features.Demands.Queries;
+using ChatMessagesApp.Core.Application.Features.Messages.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ChatMessagesApp.Web.FrontOffice.Controllers;
 
@@ -33,5 +35,15 @@ public class ApplicationController(IMediator mediator) : ControllerBase
     {
         var demand = await _mediator.Send(new GetDemandByIdQuery { Id = id });
         return Ok(demand);
+    }
+
+    [HttpGet("demand/{id}/messages")]
+    [Authorize]
+    public async Task<ActionResult<List<GetMessagesDto>>> GetDemandMessages(Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var result = await _mediator.Send(new GetMessagesQuery(id, userId!));
+        return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
 }

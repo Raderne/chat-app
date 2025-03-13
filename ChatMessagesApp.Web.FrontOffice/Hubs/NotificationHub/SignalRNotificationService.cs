@@ -8,10 +8,12 @@ namespace ChatMessagesApp.Infrastructure.Services;
 
 public class SignalRNotificationService(
     IHubContext<NotificationHub, INotificationHubClient> hubContext,
-    IUserConnectionManager userConnections) : INotificationService
+    IUserConnectionManager userConnections,
+    IContext context) : INotificationService
 {
     private readonly IHubContext<NotificationHub, INotificationHubClient> _hubContext = hubContext;
     private readonly IUserConnectionManager _userConnections = userConnections;
+    private readonly IContext _context = context;
 
     public async Task NotifyRoleAsync(string role, NotificationType type, string message, Guid? documentId = null)
     {
@@ -44,5 +46,14 @@ public class SignalRNotificationService(
         {
             await _hubContext.Clients.Client(connection).ReceiveNotification(notification);
         }
+
+        //var not = new Notification()
+        //{
+        //    UserId = userId,
+        //    Type = type,
+        //    Message = $"You have a new demand from {_currentUserService.UserName}",
+        //    RelatedDocumentId = demand.Id
+        //};
+        //_context.Notifications.Add(not);
     }
 }
