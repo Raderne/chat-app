@@ -10,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(opts =>
+{
+    opts.EnableDetailedErrors = true;
+    opts.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
+    opts.KeepAliveInterval = TimeSpan.FromMinutes(1);
+    opts.HandshakeTimeout = TimeSpan.FromSeconds(30);
+}).AddJsonProtocol();
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -77,6 +83,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<NotificationHub>("/notificationHub");
-app.MapHub<MessagingHub>("/messagingHub");
+//app.MapHub<MessagingHub>("/messagingHub");
 
 app.Run();

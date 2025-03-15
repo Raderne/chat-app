@@ -29,16 +29,18 @@ public class SendMessageCommandHandler(
 
         try
         {
-            var addedMessage = await _messageService.AddAsync(message, cancellationToken);
+            Task addedMessage = _messageService.AddAsync(message, cancellationToken);
 
-            await _domainEventService.Publish(new MessageSentEvent(addedMessage, message.RecipientId));
+            Task sendMessageInRealTime = _domainEventService.Publish(new MessageSentEvent(message, message.RecipientId));
+
+            await Task.WhenAll(addedMessage, sendMessageInRealTime);
 
             return Result<SendMessageDto>.Success(new SendMessageDto(
-                addedMessage.Id,
-                addedMessage.Content,
-                addedMessage.SenderId,
-                addedMessage.RecipientId,
-                addedMessage.Created));
+                message.Id,
+                message.Content,
+                message.SenderId,
+                message.RecipientId,
+                message.Created));
         }
         catch (Exception)
         {

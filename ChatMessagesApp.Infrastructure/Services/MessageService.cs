@@ -10,7 +10,7 @@ public class MessageService(IContext context) : IMessageService
 
     public async Task<Message> AddAsync(Message message, CancellationToken cancellationToken)
     {
-        await _context.Messages.AddAsync(message, cancellationToken);
+        _context.Messages.Add(message);
         await _context.SaveChangesAsync(cancellationToken);
 
         return message;

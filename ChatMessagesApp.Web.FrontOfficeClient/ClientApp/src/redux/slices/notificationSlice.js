@@ -1,4 +1,4 @@
-import { HubConnectionBuilder } from "@microsoft/signalr";
+import { HttpTransportType, HubConnectionBuilder } from "@microsoft/signalr";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -15,8 +15,27 @@ export const initializeSignalR = createAsyncThunk(
 	async (token, { dispatch }) => {
 		try {
 			const connection = new HubConnectionBuilder()
-				.withUrl(URL, { accessTokenFactory: () => token })
-				.withAutomaticReconnect()
+				.withUrl(URL, {
+					accessTokenFactory: () => token,
+					transport:
+						HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents,
+				})
+				.withAutomaticReconnect({
+					nextRetryDelayInMilliseconds: (retryContext) => {
+						const BASE_DELAY = 1000;
+						const MAX_DELAY = 30000;
+						const JITTER = 500;
+						if (retryContext.previousRetryCount > 3) {
+							const delay = Math.min(
+								BASE_DELAY * 2 ** retryContext.previousRetryCount,
+								MAX_DELAY,
+							);
+							const jitter = Math.floor(Math.random() * JITTER);
+							return delay + jitter;
+						}
+						return 0;
+					},
+				})
 				.build();
 
 			connection.on("ReceiveNotification", (notification) => {

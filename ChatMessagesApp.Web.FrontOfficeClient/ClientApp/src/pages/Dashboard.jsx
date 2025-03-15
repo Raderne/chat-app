@@ -5,7 +5,10 @@ import { logout } from "../redux/slices/authSlice";
 import { NotificationOutlined } from "@ant-design/icons";
 import Notifications from "../components/Notification/Notifications";
 import { useState } from "react";
-import { selectPoke } from "../redux/selectors/notificationSelectors";
+import {
+	selectPoke,
+	selectStatus,
+} from "../redux/selectors/notificationSelectors";
 import { resetPoke } from "../redux/slices/notificationSlice";
 
 const { Header, Content } = Layout;
@@ -15,6 +18,7 @@ const Dashboard = () => {
 		token: { colorBgContainer, borderRadiusLG },
 	} = theme.useToken();
 	const userName = useSelector((state) => state.auth.userName);
+	const connectionStatus = useSelector(selectStatus);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [openNotification, setOpenNotification] = useState(false);
@@ -42,6 +46,8 @@ const Dashboard = () => {
 
 						{/* Notification component */}
 						{openNotification && <Notifications />}
+
+						<span>{connectionStatus}</span>
 
 						<Button
 							type="primary"
