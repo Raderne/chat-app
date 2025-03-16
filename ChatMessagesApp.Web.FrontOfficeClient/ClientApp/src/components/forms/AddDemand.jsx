@@ -4,17 +4,11 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import TextInput from "../formInputs/TextInput";
 import SelectInput from "../formInputs/SelectInput";
-import { useSelector } from "react-redux";
-import { useSignalR } from "../../context/SignalRContext";
 
 const URL = import.meta.env.VITE_API_BASE_URL;
 
 const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 	const [users, setUsers] = useState([]);
-	const { status: connectionStatus } = useSelector(
-		(state) => state.notification,
-	);
-	const { connection, safeInvoke } = useSignalR();
 
 	const handleSubmitForm = async (values) => {
 		try {
@@ -46,9 +40,9 @@ const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 				description: "Demand added successfully",
 			});
 
-			if (connectionStatus === "connected" && connection) {
-				await safeInvoke("NotifyUserAsync");
-			}
+			// if (connectionStatus === "connected" && connection) {
+			// 	await safeInvoke("NotifyUserAsync");
+			// }
 
 			handleCloseModal(true);
 		} catch (error) {

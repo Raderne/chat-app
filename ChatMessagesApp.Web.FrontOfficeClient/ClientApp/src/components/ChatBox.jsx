@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SendMessage from "./forms/SendMessage";
 import { getInitialsCharFromUsername } from "../utils/getInitialsCharFromFullName";
+import { useSelector } from "react-redux";
+import { selectMessages } from "../redux/selectors/notificationSelectors";
 
 const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 	const [messageData, setMessageData] = useState([]);
@@ -9,6 +11,23 @@ const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 		createdBy?.split(":")[1] == localStorage.getItem("userName")
 			? RecipientUserId
 			: createdBy?.split(":")[0];
+	const messages = useSelector(selectMessages);
+
+	useEffect(() => {
+		// messages = ["test", "test2"];
+
+		if (messages.length === 0) return;
+
+		setMessageData((prev) => [
+			...prev,
+			{
+				grade: "Moi",
+				userName: localStorage.getItem("userName"),
+				message: messages[0],
+				publishDate: new Date().toLocaleDateString(),
+			},
+		]);
+	}, [messages]);
 
 	return (
 		<>
@@ -42,6 +61,7 @@ const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 				<SendMessage
 					demandId={demandId}
 					sendTo={sendToId}
+					setMessageData={setMessageData}
 				/>
 			</div>
 		</>

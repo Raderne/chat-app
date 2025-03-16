@@ -6,7 +6,7 @@ import { getInitialsCharFromUsername } from "../../utils/getInitialsCharFromFull
 
 const URL = import.meta.env.VITE_API_BASE_URL + "api/Application/send-message";
 
-const SendMessage = ({ demandId, sendTo }) => {
+const SendMessage = ({ demandId, sendTo, setMessageData }) => {
 	const username = localStorage.getItem("userName");
 
 	const initialValues = {
@@ -36,7 +36,15 @@ const SendMessage = ({ demandId, sendTo }) => {
 	const handleSubmit = async (values) => {
 		try {
 			values.sendToId = sendTo;
-			console.log(values);
+			setMessageData((prev) => [
+				...prev,
+				{
+					grade: "Moi",
+					userName: username,
+					message: values.content,
+					publishDate: new Date().toLocaleDateString(),
+				},
+			]);
 			await sendMessage(values);
 			// formik.resetForm();
 		} catch (error) {
