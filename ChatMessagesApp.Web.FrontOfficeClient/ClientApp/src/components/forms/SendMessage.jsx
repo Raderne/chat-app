@@ -3,27 +3,41 @@ import TextInput from "../formInputs/TextInput";
 import { FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { getInitialsCharFromUsername } from "../../utils/getInitialsCharFromFullName";
-import { useSignalR } from "../../context/SignalRContext";
 
-const SendMessage = ({ demandId, sendToId }) => {
+const URL = import.meta.env.VITE_API_BASE_URL + "api/Application/send-message";
+
+const SendMessage = ({ demandId, sendTo }) => {
 	const username = localStorage.getItem("userName");
-	const { connection, safeInvoke } = useSignalR();
 
 	const initialValues = {
 		demandId,
-		sendToId,
-		message: "",
+		sendToId: "",
+		content: "",
 	};
 
 	const validationSchema = Yup.object({
-		message: Yup.string().required("Message is required"),
+		content: Yup.string().required("Message is required"),
 	});
+
+	const sendMessage = async (values) => {
+		try {
+			fetch(URL, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(values),
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	const handleSubmit = async (values) => {
 		try {
-			console.log(values.demandId);
-			if (!connection) return;
-			await safeInvoke("SendMessage");
+			values.sendToId = sendTo;
+			console.log(values);
+			await sendMessage(values);
 			// formik.resetForm();
 		} catch (error) {
 			console.error(error);
@@ -47,10 +61,10 @@ const SendMessage = ({ demandId, sendToId }) => {
 					onSubmit={formik.handleSubmit}
 				>
 					<TextInput
-						name="userName"
+						name="content"
 						className="w-[100%] rounded-[4px]"
 						placeholder="Ecrire un message"
-						{...formik.getFieldProps("message")}
+						{...formik.getFieldProps("content")}
 					/>
 					<Button
 						type="primary"

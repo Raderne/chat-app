@@ -2,6 +2,7 @@
 using ChatMessagesApp.Core.Application.Features.Demands.Commands.CreateDemand;
 using ChatMessagesApp.Core.Application.Features.Demands.Queries;
 using ChatMessagesApp.Core.Application.Features.Messages.Queries;
+using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Application.Models.Chat;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,9 +13,10 @@ namespace ChatMessagesApp.Web.FrontOffice.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ApplicationController(IMediator mediator) : ControllerBase
+public class ApplicationController(IMediator mediator, ISignalRService signalRService) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly ISignalRService _signalRService = signalRService;
 
     [Authorize]
     [HttpPost("create-demand")]
@@ -47,4 +49,19 @@ public class ApplicationController(IMediator mediator) : ControllerBase
         var result = await _mediator.Send(new GetMessagesQuery(id, userId!));
         return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error);
     }
+
+    [HttpPost("send-message")]
+    public async Task<ActionResult> SendMessage([FromBody] MessageDto message)
+    {
+        await _signalRService.SendMessage(message.DemandId, message.SendToId, message.Content);
+
+        return NoContent();
+    }
+}
+
+public class MessageDto
+{
+    public Guid DemandId { get; set; }
+    public string SendToId { get; set; }
+    public string Content { get; set; }
 }

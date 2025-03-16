@@ -41,7 +41,7 @@ const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 				</div>
 				<SendMessage
 					demandId={demandId}
-					sendToId={sendToId}
+					sendTo={sendToId}
 				/>
 			</div>
 		</>
