@@ -2,9 +2,9 @@
 
 namespace ChatMessagesApp.Core.Application.Interfaces;
 
-public interface INotificationService
+public interface ISignalRService
 {
     Task NotifyUserAsync(string userId, NotificationType type, string message, Guid? documentId = null);
     Task NotifyRoleAsync(string role, NotificationType type, string message, Guid? documentId = null);
+    Task SendMessage(Guid demandId, string recipientId, string message);
 }
-

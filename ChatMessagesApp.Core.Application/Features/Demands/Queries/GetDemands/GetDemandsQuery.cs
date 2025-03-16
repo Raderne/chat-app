@@ -18,7 +18,7 @@ public class GetDemandsQueryHandler(IContext context) : IRequestHandler<GetDeman
         return await _demandContext.Demands.Select(d => new GetDemandsDto()
         {
             Id = d.Id,
-            CreatedByUserId = d.CreatedByUserId,
+            ToUserId = d.ToUserId,
             Title = d.Title,
             Description = d.Description,
             Created = d.Created,

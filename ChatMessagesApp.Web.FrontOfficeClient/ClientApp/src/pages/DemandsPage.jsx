@@ -2,6 +2,7 @@ import { Button, Col, notification, Row, Table } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import AddDemand from "../components/forms/AddDemand";
+import { useNavigate } from "react-router-dom";
 
 const INITIAL_VALUES = {
 	title: "",
@@ -17,6 +18,7 @@ const DemandsPage = () => {
 	const [demands, setDemands] = useState([]);
 	const [demand, setDemand] = useState(INITIAL_VALUES);
 	const token = localStorage.getItem("token") || "";
+	const navigate = useNavigate();
 
 	const fetchDemands = async () => {
 		try {
@@ -69,6 +71,21 @@ const DemandsPage = () => {
 			title: "Description",
 			dataIndex: "description",
 			key: "description",
+		},
+		{
+			title: "Demand Details",
+			dataIndex: "demandDetails",
+			key: "action",
+			render: (text, record) => (
+				<Button
+					type="link"
+					onClick={() => {
+						navigate(`/demands/${record.id}/${record.toUserId}`);
+					}}
+				>
+					View
+				</Button>
+			),
 		},
 	];
 

@@ -1,5 +1,6 @@
 import { HttpTransportType, HubConnectionBuilder } from "@microsoft/signalr";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { messageReceived } from "./messagingSlice";
 
 const initialState = {
 	connectionStatus: "disconnected",
@@ -8,7 +9,7 @@ const initialState = {
 	poke: false,
 };
 
-const URL = import.meta.env.VITE_API_BASE_URL + "notificationHub";
+const URL = import.meta.env.VITE_API_BASE_URL + "Hub";
 
 export const initializeSignalR = createAsyncThunk(
 	"notification/initializeSignalR",
@@ -19,11 +20,16 @@ export const initializeSignalR = createAsyncThunk(
 					accessTokenFactory: () => token,
 					transport:
 						HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents,
+					withCredentials: true,
+					timeout: 30000,
+					headers: {
+						"X-Requested-With": "XMLHttpRequest",
+					},
 				})
 				.withAutomaticReconnect({
 					nextRetryDelayInMilliseconds: (retryContext) => {
 						const BASE_DELAY = 1000;
-						const MAX_DELAY = 30000;
+						const MAX_DELAY = 10000;
 						const JITTER = 500;
 						if (retryContext.previousRetryCount > 3) {
 							const delay = Math.min(
@@ -42,10 +48,19 @@ export const initializeSignalR = createAsyncThunk(
 				dispatch(notificationReceived(notification));
 			});
 
+			connection.on("receiveMessage", (message) => {
+				console.log(
+					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+					message,
+					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+				);
+				dispatch(messageReceived(message));
+			});
+
 			await connection.start();
 			return connection;
 		} catch (error) {
-			throw new Error(error.message);
+			console.log(error);
 		}
 	},
 );

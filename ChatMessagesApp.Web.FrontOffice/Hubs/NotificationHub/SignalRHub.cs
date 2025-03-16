@@ -4,9 +4,9 @@ using System.Security.Claims;
 
 namespace ChatMessagesApp.Web.FrontOffice.Hubs;
 
-public class NotificationHub(
+public class SignalRHub(
     IUserConnectionManager userConnectionManager,
-    ICurrentUserService currentUser) : Hub<INotificationHubClient>
+    ICurrentUserService currentUser) : Hub<IHubClient>
 {
     private readonly IUserConnectionManager _connectionManager = userConnectionManager;
     private readonly ICurrentUserService _currentUser = currentUser;

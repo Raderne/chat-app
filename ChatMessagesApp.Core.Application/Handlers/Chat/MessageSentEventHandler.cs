@@ -6,9 +6,9 @@ using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Handlers;
 
-public class MessageSentEventHandler(INotificationService notificationService) : INotificationHandler<DomainEventNotification<MessageSentEvent>>
+public class MessageSentEventHandler(ISignalRService notificationService) : INotificationHandler<DomainEventNotification<MessageSentEvent>>
 {
-    private readonly INotificationService _notificationService = notificationService;
+    private readonly ISignalRService _notificationService = notificationService;
 
     public async Task Handle(DomainEventNotification<MessageSentEvent> notification, CancellationToken cancellationToken)
     {

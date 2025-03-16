@@ -6,17 +6,17 @@ using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Handlers.Notifications;
 
-public class DemandCreatedEventHandler(INotificationService notificationService)
+public class DemandCreatedEventHandler(ISignalRService notificationService)
     : INotificationHandler<DomainEventNotification<DemandCreatedEvent>>
 {
-    private readonly INotificationService _notificationService = notificationService;
+    private readonly ISignalRService _notificationService = notificationService;
 
     public async Task Handle(DomainEventNotification<DemandCreatedEvent> notification, CancellationToken cancellationToken)
     {
         var demand = notification.DomainEvent.CreatedDemand;
 
         await _notificationService.NotifyUserAsync(
-            demand.CreatedByUserId,
+            demand.ToUserId,
             NotificationType.DemandCreated,
             $"Demand {demand.Title} has been created.");
     }

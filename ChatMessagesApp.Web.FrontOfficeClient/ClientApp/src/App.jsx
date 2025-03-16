@@ -5,6 +5,7 @@ import Loading from "./components/common/Loading";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import DemandsPage from "./pages/DemandsPage";
+import Demand from "./components/Demand";
 
 const Login = lazy(() => import("./pages/Login"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -30,6 +31,10 @@ function App() {
 						<Route
 							index
 							element={<DemandsPage />}
+						/>
+						<Route
+							path="/demands/:id/:recipientId"
+							element={<Demand />}
 						/>
 					</Route>
 					<Route

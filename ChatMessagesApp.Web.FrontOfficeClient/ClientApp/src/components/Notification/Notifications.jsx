@@ -10,7 +10,7 @@ const Notifications = () => {
 			{notifications.map((notification, index) => (
 				<NotificationMessage
 					key={index}
-					Message={notification.message}
+					Message={notification.Message}
 				/>
 			))}
 		</div>

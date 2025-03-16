@@ -6,13 +6,13 @@ public class Demand : EntityWithDomainEvents<Guid>
 {
     public string Title { get; set; }
     public string Description { get; set; }
-    public string CreatedByUserId { get; set; }
+    public string ToUserId { get; set; }
 
-    public Demand(string title, string description, string createdByUserId)
+    public Demand(string title, string description, string toUserId)
     {
         Title = title;
         Description = description;
-        CreatedByUserId = createdByUserId;
+        ToUserId = toUserId;
 
         AddDomainEvent(new DemandCreatedEvent(this));
     }

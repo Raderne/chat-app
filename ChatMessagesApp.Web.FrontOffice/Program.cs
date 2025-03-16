@@ -10,13 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddSignalR(opts =>
+builder.Services.AddSignalR(hubOptions =>
 {
-    opts.EnableDetailedErrors = true;
-    opts.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
-    opts.KeepAliveInterval = TimeSpan.FromMinutes(1);
-    opts.HandshakeTimeout = TimeSpan.FromSeconds(30);
-}).AddJsonProtocol();
+    hubOptions.EnableDetailedErrors = true;
+    hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(2);
+    hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(15);
+    hubOptions.MaximumParallelInvocationsPerClient = 2;
+    hubOptions.StreamBufferCapacity = 10;
+}).AddJsonProtocol(opts =>
+{
+    opts.PayloadSerializerOptions.PropertyNamingPolicy = null;
+});
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -24,7 +28,7 @@ builder.Services.AddIdentityInfrastructure(builder.Configuration);
 builder.Services.AddCommon();
 builder.Services.AddApplication();
 
-builder.Services.AddScoped<INotificationService, SignalRNotificationService>();
+builder.Services.AddScoped<ISignalRService, SignalRService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(cfg =>
@@ -51,8 +55,6 @@ builder.Services.AddSwaggerGen(cfg =>
         }
     );
 });
-
-//var origins = builder.Configuration.GetValue("AllowedOrigins", string.Empty)!.Split(",");
 
 builder.Services.AddCors(options =>
 {
@@ -81,8 +83,17 @@ app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("Content-Security-Policy",
+        "default-src 'self'");
+    await next();
+});
+
 app.MapControllers();
-app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<SignalRHub>("/Hub");
 //app.MapHub<MessagingHub>("/messagingHub");
 
 app.Run();

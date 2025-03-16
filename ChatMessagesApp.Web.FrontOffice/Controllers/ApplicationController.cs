@@ -2,6 +2,7 @@
 using ChatMessagesApp.Core.Application.Features.Demands.Commands.CreateDemand;
 using ChatMessagesApp.Core.Application.Features.Demands.Queries;
 using ChatMessagesApp.Core.Application.Features.Messages.Queries;
+using ChatMessagesApp.Core.Application.Models.Chat;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ public class ApplicationController(IMediator mediator) : ControllerBase
 
     [HttpGet("demand/{id}/messages")]
     [Authorize]
-    public async Task<ActionResult<List<GetMessagesDto>>> GetDemandMessages(Guid id)
+    public async Task<ActionResult<List<SendMessageDto>>> GetDemandMessages(Guid id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

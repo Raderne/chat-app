@@ -14,7 +14,7 @@ const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 	const { status: connectionStatus } = useSelector(
 		(state) => state.notification,
 	);
-	const { connection, invoke } = useSignalR();
+	const { connection, safeInvoke } = useSignalR();
 
 	const handleSubmitForm = async (values) => {
 		try {
@@ -47,7 +47,7 @@ const AddDemand = ({ initialValues, isModalVisible, closeModal, token }) => {
 			});
 
 			if (connectionStatus === "connected" && connection) {
-				await invoke("NotifyUserAsync");
+				await safeInvoke("NotifyUserAsync");
 			}
 
 			handleCloseModal(true);
