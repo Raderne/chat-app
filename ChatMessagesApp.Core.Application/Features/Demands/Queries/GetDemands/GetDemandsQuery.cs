@@ -22,6 +22,7 @@ public class GetDemandsQueryHandler(IContext context) : IRequestHandler<GetDeman
             Title = d.Title,
             Description = d.Description,
             Created = d.Created,
+            CreatedBy = d.CreatedBy
         }).ToListAsync(cancellationToken);
     }
 }

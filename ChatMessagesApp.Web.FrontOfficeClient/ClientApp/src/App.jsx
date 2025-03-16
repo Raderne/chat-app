@@ -33,7 +33,7 @@ function App() {
 							element={<DemandsPage />}
 						/>
 						<Route
-							path="/demands/:id/:recipientId"
+							path="/demands/:id"
 							element={<Demand />}
 						/>
 					</Route>

@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useSignalR } from "../context/SignalRContext";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
 	connectionStatusChanged,
 	errorOccurred,
@@ -9,12 +9,32 @@ import {
 } from "../redux/slices/messagingSlice";
 import ChatBox from "./ChatBox";
 
+const URL = import.meta.env.VITE_API_BASE_URL + "api/Application/demand";
+
 const Demand = () => {
+	const [demand, setDemand] = useState();
 	const location = useLocation();
 	const id = location.pathname.split("/")[2];
-	const recipientId = location.pathname.split("/")[3];
 	const { connection } = useSignalR();
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const getDemand = async () => {
+			try {
+				const response = await fetch(`${URL}/${id}`);
+				if (response.ok) {
+					const data = await response.json();
+					console.log(data);
+					setDemand(data);
+				} else {
+					throw new Error("Failed to fetch demand");
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		getDemand();
+	}, [id]);
 
 	useEffect(() => {
 		if (connection) {
@@ -46,12 +66,13 @@ const Demand = () => {
 		<div className="">
 			<h1>Demand</h1>
 			<p>
-				id: {id} || recipient Id : {recipientId}
+				id: {id} || created by : {demand?.createdBy?.split(":")[1]}
 			</p>
-			<div className="min-w-screen min-h-screen">
+			<div className="min-h-screen flex items-center justify-center">
 				<ChatBox
-					RecipientUserId={recipientId}
 					demandId={id}
+					RecipientUserId={demand?.toUserId}
+					createdBy={demand?.createdBy}
 				/>
 			</div>
 		</div>

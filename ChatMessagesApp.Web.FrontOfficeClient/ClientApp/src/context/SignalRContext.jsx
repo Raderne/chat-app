@@ -87,6 +87,7 @@ export const SignalRProvider = ({ children }) => {
 				connectionState.isInitializing = false;
 			}
 
+			console.log("Invoking method:", methodName);
 			await connectionRef.current.invoke(methodName, ...args);
 		} catch (error) {
 			console.error("Error invoking method:", error);

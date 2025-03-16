@@ -80,7 +80,7 @@ const DemandsPage = () => {
 				<Button
 					type="link"
 					onClick={() => {
-						navigate(`/demands/${record.id}/${record.toUserId}`);
+						navigate(`/demands/${record.id}`);
 					}}
 				>
 					View

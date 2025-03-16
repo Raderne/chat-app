@@ -24,6 +24,7 @@ public class GetDemandByIdQueryHandler(IContext context) : IRequestHandler<GetDe
             Title = d.Title,
             Description = d.Description,
             Created = d.Created,
+            CreatedBy = d.CreatedBy
         }).FirstOrDefaultAsync(cancellationToken);
 
         if (demand == null)
