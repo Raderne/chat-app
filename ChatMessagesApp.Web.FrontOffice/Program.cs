@@ -2,7 +2,6 @@ using ChatMessagesApp.Core.Application;
 using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Common;
 using ChatMessagesApp.Infrastructure;
-using ChatMessagesApp.Infrastructure.Services;
 using ChatMessagesApp.Web.FrontOffice.Hubs;
 using Microsoft.OpenApi.Models;
 

@@ -1,9 +1,10 @@
 ﻿using ChatMessagesApp.Core.Application.Features;
 using ChatMessagesApp.Core.Application.Features.Demands.Commands.CreateDemand;
 using ChatMessagesApp.Core.Application.Features.Demands.Queries;
+using ChatMessagesApp.Core.Application.Features.Messages.Commands;
 using ChatMessagesApp.Core.Application.Features.Messages.Queries;
 using ChatMessagesApp.Core.Application.Interfaces;
-using ChatMessagesApp.Core.Application.Models.Chat;
+using ChatMessagesApp.Core.Application.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,7 @@ public class ApplicationController(IMediator mediator, ISignalRService signalRSe
 
     [HttpGet("demand/{id}/messages")]
     [Authorize]
-    public async Task<ActionResult<List<SendMessageDto>>> GetDemandMessages(Guid id)
+    public async Task<ActionResult<List<GetMessageDto>>> GetDemandMessages(Guid id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -51,17 +52,10 @@ public class ApplicationController(IMediator mediator, ISignalRService signalRSe
     }
 
     [HttpPost("send-message")]
-    public async Task<ActionResult> SendMessage([FromBody] MessageDto message)
+    public async Task<ActionResult> SendMessage([FromBody] SendMessageDto messageDto)
     {
-        await _signalRService.SendMessage(message.DemandId, message.SendToId, message.Content);
+        var result = await _mediator.Send(new SendMessageCommand(messageDto.DemandId, messageDto.Content, messageDto.SendToId));
 
-        return NoContent();
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
-}
-
-public class MessageDto
-{
-    public Guid DemandId { get; set; }
-    public string SendToId { get; set; }
-    public string Content { get; set; }
 }

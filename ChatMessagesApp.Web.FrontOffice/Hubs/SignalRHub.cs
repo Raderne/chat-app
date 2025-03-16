@@ -1,6 +1,5 @@
 ﻿using ChatMessagesApp.Core.Application.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace ChatMessagesApp.Web.FrontOffice.Hubs;
 
@@ -14,19 +13,19 @@ public class SignalRHub(
     public override async Task OnConnectedAsync()
     {
         var userId = _currentUser?.UserId;
-        var roles = _currentUser?.Roles;
+        //var roles = _currentUser?.Roles;
 
         if (!string.IsNullOrEmpty(userId))
         {
             _connectionManager.AddConnection(userId, Context.ConnectionId);
 
-            if (roles != null)
-            {
-                foreach (var role in roles)
-                {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, role);
-                }
-            }
+            //if (roles != null)
+            //{
+            //    foreach (var role in roles)
+            //    {
+            //        await Groups.AddToGroupAsync(Context.ConnectionId, role);
+            //    }
+            //}
         }
 
 
@@ -35,8 +34,10 @@ public class SignalRHub(
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        _connectionManager.RemoveConnection(userId!, Context.ConnectionId);
+        var userId = _currentUser?.UserId;
+        if (!string.IsNullOrEmpty(userId))
+            _connectionManager.RemoveConnection(userId!, Context.ConnectionId);
+
         await base.OnDisconnectedAsync(exception);
     }
 }

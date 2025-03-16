@@ -1,12 +1,10 @@
-﻿using ChatMessagesApp.Core.Application.Features.Messages.Commands;
-using ChatMessagesApp.Core.Application.Interfaces;
+﻿using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Application.Models.Notification;
 using ChatMessagesApp.Core.Domain.Enums;
-using ChatMessagesApp.Web.FrontOffice.Hubs;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChatMessagesApp.Infrastructure.Services;
+namespace ChatMessagesApp.Web.FrontOffice.Hubs;
 
 public class SignalRService(
     IHubContext<SignalRHub, IHubClient> hubContext,
@@ -21,7 +19,7 @@ public class SignalRService(
 
     public async Task NotifyRoleAsync(string role, NotificationType type, string message, Guid? documentId = null)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(role, nameof(role));
+        ArgumentException.ThrowIfNullOrEmpty(role, nameof(role));
 
         var notification = new NotificationDto()
         {
@@ -35,7 +33,7 @@ public class SignalRService(
 
     public async Task NotifyUserAsync(string userId, NotificationType type, string message, Guid? documentId = null)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(userId, nameof(userId));
+        ArgumentException.ThrowIfNullOrEmpty(userId, nameof(userId));
 
         var notification = new NotificationDto()
         {
@@ -61,15 +59,13 @@ public class SignalRService(
         //_context.Notifications.Add(not);
     }
 
-    public async Task SendMessage(Guid demandId, string recipientId, string message)
+    public async Task SendMessage(string recipientId, string message)
     {
         var senderId = _currentUserService.UserId;
 
-        var result = await _mediator.Send(new SendMessageCommand(demandId, message, senderId, recipientId));
-
-        if (result.IsFailure)
+        if (string.IsNullOrEmpty(recipientId))
         {
-            throw new HubException(result.Error);
+            throw new HubException("Recipient not found");
         }
 
         var recipientConnections = _userConnections.GetConnections(recipientId);
@@ -77,7 +73,7 @@ public class SignalRService(
         {
             foreach (var connectionId in recipientConnections)
             {
-                await _hubContext.Clients.Client(connectionId).ReceiveMessage(result.Value!);
+                await _hubContext.Clients.Client(connectionId).ReceiveMessage(message);
             }
         }
 
@@ -87,7 +83,7 @@ public class SignalRService(
         {
             foreach (var connectionId in senderConnections)
             {
-                await _hubContext.Clients.Client(connectionId).ReceiveMessage(result.Value!);
+                await _hubContext.Clients.Client(connectionId).ReceiveMessage(message);
             }
         }
     }

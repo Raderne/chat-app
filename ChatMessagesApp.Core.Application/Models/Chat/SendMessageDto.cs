@@ -1,9 +1,3 @@
-﻿namespace ChatMessagesApp.Core.Application.Models.Chat;
+﻿namespace ChatMessagesApp.Core.Application.Models;
 
-public record SendMessageDto(
-    Guid Id,
-    string SenderId,
-    string RecipientId,
-    string Content,
-    DateTime Created
-);
+public record SendMessageDto(Guid DemandId, string SendToId, string Content);
