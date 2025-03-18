@@ -48,31 +48,46 @@ public class ApplicationContext(
             .HasDatabaseName("IX_Message_Created");
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        string userId = _currentUserService.IsLoggedIn()
-            ? $"{_currentUserService.UserId}:{_currentUserService.UserName}:{_currentUserService.PreferedUserName}"
-            : "Anonymous";
+        return SaveChangesAsync(null, cancellationToken);
+    }
 
-        var currentTime = DateTime.UtcNow;
-
-        foreach (var entry in ChangeTracker.Entries<IAuditableEntity<string>>())
+    public virtual async Task<int> SaveChangesAsync(Action<Exception>? onException = null, CancellationToken cancellationToken = default, string tenantId = null)
+    {
         {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedBy = userId;
-                    entry.Entity.Created = currentTime;
-                    entry.Entity.LastModifiedBy = userId;
-                    entry.Entity.LastModified = currentTime;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = userId;
-                    entry.Entity.LastModified = currentTime;
-                    break;
-            }
-        }
+            string userId = _currentUserService.IsLoggedIn()
+                ? $"{_currentUserService.UserId}:{_currentUserService.UserName}:{_currentUserService.PreferedUserName}"
+                : "Anonymous";
 
+            var currentTime = DateTime.UtcNow;
+
+            foreach (var entry in ChangeTracker.Entries<IAuditableEntity<string>>())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedBy = userId;
+                        entry.Entity.Created = currentTime;
+                        entry.Entity.LastModifiedBy = userId;
+                        entry.Entity.LastModified = currentTime;
+                        break;
+                    case EntityState.Modified:
+                        entry.Entity.LastModifiedBy = userId;
+                        entry.Entity.LastModified = currentTime;
+                        break;
+                }
+            }
+
+            await PublishDomainEventsAsync();
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            return result;
+        }
+    }
+
+    private async Task PublishDomainEventsAsync()
+    {
         var domainEventEntities = ChangeTracker.Entries<EntityWithDomainEvents<Guid>>()
             .Select(e => e.Entity)
             .Where(e => e.DomainEvents.Any())
@@ -87,9 +102,5 @@ public class ApplicationContext(
                 entity.ClearDomainEvents();
             }
         }
-
-        var result = await base.SaveChangesAsync(cancellationToken);
-
-        return result;
     }
 }
