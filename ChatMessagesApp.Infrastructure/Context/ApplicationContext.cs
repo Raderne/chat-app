@@ -73,9 +73,9 @@ public class ApplicationContext(
             }
         }
 
-        var domainEventEntities = ChangeTracker.Entries<Demand>()
-            .Select(d => d.Entity)
-            .Where(d => d.DomainEvents.Any())
+        var domainEventEntities = ChangeTracker.Entries<EntityWithDomainEvents<Guid>>()
+            .Select(e => e.Entity)
+            .Where(e => e.DomainEvents.Any())
             .ToArray();
 
         foreach (var entity in domainEventEntities)

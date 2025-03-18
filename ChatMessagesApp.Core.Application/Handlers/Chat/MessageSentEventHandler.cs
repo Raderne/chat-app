@@ -18,7 +18,7 @@ public class MessageSentEventHandler(ISignalRService signalRService) : INotifica
         await _notificationService.NotifyUserAsync(
             notification.DomainEvent.RecipientUserId,
             NotificationType.NewMessage,
-            message.RecipientId + " has sent a message",
+            message.CreatedBy.Split(":")[1] + " sent you a message.",
             message.DemandId);
 
         await _notificationService.SendMessage(message.RecipientId, message.Content);
