@@ -95,11 +95,12 @@ public class ApplicationContext(
 
         foreach (var entity in domainEventEntities)
         {
-            var latestDomainEvent = entity.DomainEvents.LastOrDefault();
-            if (latestDomainEvent != null)
+            //var latestDomainEvent = entity.DomainEvents.LastOrDefault();
+            var events = entity.DomainEvents.ToArray();
+            entity.ClearDomainEvents();
+            foreach (var domainEvent in events)
             {
-                await _domainEventService.Publish(latestDomainEvent);
-                entity.ClearDomainEvents();
+                await _domainEventService.Publish(domainEvent);
             }
         }
     }

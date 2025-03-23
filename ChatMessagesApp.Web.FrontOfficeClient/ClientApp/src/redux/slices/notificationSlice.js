@@ -1,6 +1,5 @@
-import { HttpTransportType, HubConnectionBuilder } from "@microsoft/signalr";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { messageReceived } from "./messagingSlice";
+import { CreateSignalRConnection } from "../../services/SignalRService";
 
 const initialState = {
 	connectionStatus: "disconnected",
@@ -15,46 +14,10 @@ export const initializeSignalR = createAsyncThunk(
 	"notification/initializeSignalR",
 	async (token, { dispatch }) => {
 		try {
-			const connection = new HubConnectionBuilder()
-				.withUrl(URL, {
-					accessTokenFactory: () => token,
-					transport:
-						HttpTransportType.LongPolling | HttpTransportType.ServerSentEvents,
-					withCredentials: true,
-					timeout: 30000,
-					headers: {
-						"X-Requested-With": "XMLHttpRequest",
-					},
-				})
-				.withAutomaticReconnect({
-					nextRetryDelayInMilliseconds: (retryContext) => {
-						const BASE_DELAY = 1000;
-						const MAX_DELAY = 10000;
-						const JITTER = 500;
-						if (retryContext.previousRetryCount > 3) {
-							const delay = Math.min(
-								BASE_DELAY * 2 ** retryContext.previousRetryCount,
-								MAX_DELAY,
-							);
-							const jitter = Math.floor(Math.random() * JITTER);
-							return delay + jitter;
-						}
-						return 0;
-					},
-				})
-				.build();
+			const connection = CreateSignalRConnection(URL, token);
 
 			connection.on("ReceiveNotification", (notification) => {
 				dispatch(notificationReceived(notification));
-			});
-
-			connection.on("receiveMessage", (message) => {
-				console.log(
-					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-					message,
-					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-				);
-				dispatch(messageReceived(message));
 			});
 
 			await connection.start();
