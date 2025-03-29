@@ -6,12 +6,12 @@ namespace ChatMessagesApp.Core.Domain.Events;
 public class MessageSentEvent : DomainEvent
 {
     public Message MessageCreated { get; }
-    public string RecipientUserId { get; }
+    public List<string> ParticipantIds { get; }
 
-    public MessageSentEvent(Message message, string recipientUserId)
+    public MessageSentEvent(Message message, List<string> participantIds)
     {
         MessageCreated = message;
-        RecipientUserId = recipientUserId;
+        ParticipantIds = participantIds;
         DateOccurred = DateTimeOffset.UtcNow;
     }
 }

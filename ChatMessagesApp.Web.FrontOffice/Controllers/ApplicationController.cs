@@ -54,7 +54,7 @@ public class ApplicationController(IMediator mediator, ISignalRService signalRSe
     [HttpPost("send-message")]
     public async Task<ActionResult> SendMessage([FromBody] SendMessageDto messageDto)
     {
-        var result = await _mediator.Send(new SendMessageCommand(messageDto.DemandId, messageDto.Content, messageDto.SendToId));
+        var result = await _mediator.Send(new SendMessageCommand(messageDto.DemandId, messageDto.Content, messageDto.ConversationId, messageDto.SendToId));
 
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }

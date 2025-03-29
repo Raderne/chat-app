@@ -13,14 +13,30 @@ public class MessageSentEventHandler(ISignalRService signalRService) : INotifica
     public async Task Handle(DomainEventNotification<MessageSentEvent> notification, CancellationToken cancellationToken)
     {
         var message = notification.DomainEvent.MessageCreated;
+        var participantIds = notification.DomainEvent.ParticipantIds;
 
         // Send notification to recipient
-        await _notificationService.NotifyUserAsync(
-            notification.DomainEvent.RecipientUserId,
-            NotificationType.NewMessage,
-            message.CreatedBy.Split(":")[1] + " sent you a message.",
-            message.DemandId);
+        //await _notificationService.NotifyUserAsync(
+        //    message.RecipientId,
+        //    NotificationType.NewMessage,
+        //    message.CreatedBy.Split(":")[1] + " sent you a message.",
+        //    message.DemandId);
 
-        await _notificationService.SendMessage(message.RecipientId, message.Content);
+        //await _notificationService.SendMessage(message.RecipientId, message.Content);
+
+        foreach (var participantId in participantIds)
+        {
+            if (participantId != message.RecipientId)
+            {
+                // Send notification to other participants
+                await _notificationService.NotifyUserAsync(
+                    participantId,
+                    NotificationType.NewMessage,
+                    message.CreatedBy.Split(":")[1] + " sent a message.",
+                    message.DemandId);
+
+                await _notificationService.SendMessage(participantId, message.Content);
+            }
+        }
     }
 }
