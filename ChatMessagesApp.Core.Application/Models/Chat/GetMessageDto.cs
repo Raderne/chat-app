@@ -2,8 +2,8 @@
 
 public record GetMessageDto(
     Guid Id,
+    Guid ConversationId,
     string SenderId,
-    string RecipientId,
     string Content,
     DateTime Created
 );

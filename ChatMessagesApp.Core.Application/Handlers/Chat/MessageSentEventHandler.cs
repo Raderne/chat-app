@@ -26,7 +26,7 @@ public class MessageSentEventHandler(ISignalRService signalRService) : INotifica
 
         foreach (var participantId in participantIds)
         {
-            if (participantId != message.RecipientId)
+            if (participantId != message.SenderId)
             {
                 // Send notification to other participants
                 await _notificationService.NotifyUserAsync(

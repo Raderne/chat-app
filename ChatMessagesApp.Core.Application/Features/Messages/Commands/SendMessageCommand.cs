@@ -2,6 +2,7 @@
 using ChatMessagesApp.Core.Application.Models;
 using ChatMessagesApp.Core.Application.Responses;
 using ChatMessagesApp.Core.Domain.Entities;
+using ChatMessagesApp.Core.Domain.Events;
 using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Features.Messages.Commands;
@@ -9,42 +10,46 @@ namespace ChatMessagesApp.Core.Application.Features.Messages.Commands;
 public record SendMessageCommand(
     Guid DemandId,
     string Content,
-    Guid ConversationId,
-    string senderId) : IRequest<Result<GetMessageDto>>;
+    Guid ConversationId) : IRequest<Result<GetMessageDto>>;
 
 public class SendMessageCommandHandler(
-    IMessageService messageService,
     IDomainEventService domainEventService,
-    ICurrentUserService currentUserService) : IRequestHandler<SendMessageCommand, Result<GetMessageDto>>
+    ICurrentUserService currentUserService,
+    IConversationService conversationService) : IRequestHandler<SendMessageCommand, Result<GetMessageDto>>
 {
-    private readonly IMessageService _messageService = messageService;
     private readonly IDomainEventService _domainEventService = domainEventService;
     private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IConversationService _conversationService = conversationService;
 
     public async Task<Result<GetMessageDto>> Handle(SendMessageCommand request, CancellationToken cancellationToken)
     {
-        var senderId = _currentUserService.UserId;
-
-        var message = new Message()
-        {
-            DemandId = request.DemandId,
-            Content = request.Content,
-            SenderId = senderId,
-        };
-
         try
         {
-            Task addedMessage = _messageService.AddAsync(message, cancellationToken);
+            var senderId = _currentUserService.UserId;
+            var convorsation = await _conversationService.GetByIdAsync(request.ConversationId);
 
-            //Task sendMessageInRealTime = _domainEventService.Publish(new MessageSentEvent(message, message.RecipientId));
+            if (convorsation == null)
+                return Result<GetMessageDto>.Failure("Conversation not found");
 
-            //await Task.WhenAll(addedMessage, sendMessageInRealTime);
+            var message = new Message()
+            {
+                DemandId = request.DemandId,
+                Content = request.Content,
+                SenderId = senderId,
+                ConversationId = convorsation.Id,
+            };
+
+            convorsation.Messages.Add(message);
+            Task addedMessage = _conversationService.UpdateAsync(convorsation, cancellationToken);
+            Task sendMessageInRealTime = _domainEventService.Publish(new MessageSentEvent(message, convorsation.ParticipantIds));
+
+            await Task.WhenAll(addedMessage, sendMessageInRealTime);
 
             return Result<GetMessageDto>.Success(new GetMessageDto(
                 message.Id,
-                message.Content,
+                (Guid)message.ConversationId,
                 message.SenderId,
-                message.RecipientId,
+                message.Content,
                 message.Created));
         }
         catch (Exception)

@@ -4,6 +4,7 @@ using ChatMessagesApp.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatMessagesApp.Infrastructure.Migrations.Application
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250329145324_FixConversation")]
+    partial class FixConversation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,6 +154,10 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                     b.Property<int>("MessageStatus")
                         .HasColumnType("int");
 
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<byte[]>("RowVersion")
                         .HasColumnType("varbinary(max)");
 
@@ -163,8 +170,7 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConversationId")
-                        .HasDatabaseName("IX_Message_ConversationId");
+                    b.HasIndex("ConversationId");
 
                     b.HasIndex("Created")
                         .HasDatabaseName("IX_Message_Created");
@@ -175,11 +181,14 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                     b.HasIndex("MessageStatus")
                         .HasDatabaseName("IX_Message_MessageStatus");
 
+                    b.HasIndex("RecipientId")
+                        .HasDatabaseName("IX_Message_RecipientId");
+
                     b.HasIndex("SenderId")
                         .HasDatabaseName("IX_Message_SenderId");
 
-                    b.HasIndex("SenderId", "ConversationId")
-                        .HasDatabaseName("IX_Message_SenderId_ConversationId");
+                    b.HasIndex("SenderId", "RecipientId")
+                        .HasDatabaseName("IX_Message_SenderId_RecipientId");
 
                     b.ToTable("Messages");
                 });

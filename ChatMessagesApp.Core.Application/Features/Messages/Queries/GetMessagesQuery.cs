@@ -18,8 +18,8 @@ public class GetMessagesQueryHandler(IMessageService messageService) : IRequestH
 
         var result = messages.Select(messages => new GetMessageDto(
             messages.Id,
+            (Guid)messages.ConversationId!,
             messages.SenderId,
-            messages.RecipientId,
             messages.Content,
             messages.Created
         )).ToList();

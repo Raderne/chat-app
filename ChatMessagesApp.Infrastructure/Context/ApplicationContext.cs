@@ -37,12 +37,12 @@ public class ApplicationContext(
             .HasDatabaseName("IX_Message_SenderId");
 
         modelBuilder.Entity<Message>()
-            .HasIndex(m => m.RecipientId)
-            .HasDatabaseName("IX_Message_RecipientId");
+            .HasIndex(m => m.ConversationId)
+            .HasDatabaseName("IX_Message_ConversationId");
 
         modelBuilder.Entity<Message>()
-            .HasIndex(m => new { m.SenderId, m.RecipientId })
-            .HasDatabaseName("IX_Message_SenderId_RecipientId");
+            .HasIndex(m => new { m.SenderId, m.ConversationId })
+            .HasDatabaseName("IX_Message_SenderId_ConversationId");
 
         modelBuilder.Entity<Message>()
             .HasIndex(m => m.Created)
