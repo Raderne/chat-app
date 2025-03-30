@@ -5,25 +5,34 @@ using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Features.Messages.Queries;
 
-public record GetMessagesQuery(Guid DemandId, string UserId) : IRequest<Result<List<GetMessageDto>>>;
+public record GetMessagesQuery(Guid DemandId, string UserId) : IRequest<Result<GetConversationDto>>;
 
-public class GetMessagesQueryHandler(IMessageService messageService) : IRequestHandler<GetMessagesQuery, Result<List<GetMessageDto>>>
+public class GetMessagesQueryHandler(IConversationService conversationService) : IRequestHandler<GetMessagesQuery, Result<GetConversationDto>>
 {
-    private readonly IMessageService _messageService = messageService;
-    public async Task<Result<List<GetMessageDto>>> Handle(GetMessagesQuery request, CancellationToken cancellationToken)
+    private readonly IConversationService _conversationService = conversationService;
+    public async Task<Result<GetConversationDto>> Handle(GetMessagesQuery request, CancellationToken cancellationToken)
     {
-        var messages = await _messageService.GetByDemandIdAsync(request.DemandId);
-        if (messages == null)
-            return Result<List<GetMessageDto>>.Failure("Messages not found.");
+        var conversation = await _conversationService.GetByDemandIdAsync(request.DemandId);
+        if (conversation == null)
+            return Result<GetConversationDto>.Failure("Messages not found.");
 
-        var result = messages.Select(messages => new GetMessageDto(
-            messages.Id,
-            (Guid)messages.ConversationId!,
-            messages.SenderId,
-            messages.Content,
-            messages.Created
+        var messages = conversation.Messages.Select(m => new GetMessageDto(
+            m.Id,
+            (Guid)m.ConversationId!,
+            m.SenderId,
+            m.Content,
+            m.Created,
+            m.CreatedBy
         )).ToList();
 
-        return Result<List<GetMessageDto>>.Success(result);
+        var result = new GetConversationDto(
+            conversation.Id,
+            conversation.DemandId,
+            conversation.ParticipantIds,
+            messages
+        );
+
+        return Result<GetConversationDto>.Success(result);
+
     }
 }

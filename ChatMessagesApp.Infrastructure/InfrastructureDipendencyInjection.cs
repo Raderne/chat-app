@@ -19,6 +19,7 @@ public static class InfrastructureDipendencyInjection
         services.AddScoped<IContext, ApplicationContext>();
         services.AddScoped<IDomainEventService, DomainEventService>();
         services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<IConversationService, ConversationService>();
 
         return services;
     }

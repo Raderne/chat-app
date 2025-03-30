@@ -11,12 +11,17 @@ public class GetDemandByIdQuery : IRequest<GetDemandsDto>
     public Guid Id { get; set; }
 }
 
-public class GetDemandByIdQueryHandler(IContext context) : IRequestHandler<GetDemandByIdQuery, GetDemandsDto>
+public class GetDemandByIdQueryHandler(
+    IContext context,
+    ICurrentUserService currentUserService) : IRequestHandler<GetDemandByIdQuery, GetDemandsDto>
 {
     private readonly IContext _demandContext = context;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
 
     public async Task<GetDemandsDto> Handle(GetDemandByIdQuery request, CancellationToken cancellationToken)
     {
+
+
         var demand = await _demandContext.Demands.Where(d => d.Id == request.Id).Select(d => new GetDemandsDto()
         {
             Id = d.Id,

@@ -6,13 +6,13 @@ import { getInitialsCharFromUsername } from "../../utils/getInitialsCharFromFull
 
 const URL = import.meta.env.VITE_API_BASE_URL + "api/Application/send-message";
 
-const SendMessage = ({ demandId, sendTo, setMessageData }) => {
+const SendMessage = ({ demandId, conversationId, setMessageData }) => {
 	const username = localStorage.getItem("userName");
 
 	const initialValues = {
 		demandId,
-		sendToId: "",
 		content: "",
+		conversationId: "",
 	};
 
 	const validationSchema = Yup.object({
@@ -25,6 +25,7 @@ const SendMessage = ({ demandId, sendTo, setMessageData }) => {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
 				body: JSON.stringify(values),
 			});
@@ -35,7 +36,7 @@ const SendMessage = ({ demandId, sendTo, setMessageData }) => {
 
 	const handleSubmit = async (values) => {
 		try {
-			values.sendToId = sendTo;
+			values.conversationId = conversationId;
 			setMessageData((prev) => [
 				...prev,
 				{
@@ -46,7 +47,7 @@ const SendMessage = ({ demandId, sendTo, setMessageData }) => {
 				},
 			]);
 			await sendMessage(values);
-			// formik.resetForm();
+			formik.resetForm();
 		} catch (error) {
 			console.error(error);
 		}

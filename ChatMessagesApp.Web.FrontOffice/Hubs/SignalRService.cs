@@ -59,29 +59,19 @@ public class SignalRService(
         //_context.Notifications.Add(not);
     }
 
-    public async Task SendMessage(string recipientId, string message)
+    public async Task SendMessage(string recipiantId, string message)
     {
         var senderId = _currentUserService.UserId;
 
-        if (string.IsNullOrEmpty(recipientId))
+        if (string.IsNullOrEmpty(recipiantId))
         {
             throw new HubException("Recipient not found");
         }
 
-        var recipientConnections = _userConnections.GetConnections(recipientId);
+        var recipientConnections = _userConnections.GetConnections(recipiantId);
         if (recipientConnections != null)
         {
             foreach (var connectionId in recipientConnections)
-            {
-                await _hubContext.Clients.Client(connectionId).ReceiveMessage(message);
-            }
-        }
-
-        // Also send back to sender for UI sync
-        var senderConnections = _userConnections.GetConnections(senderId);
-        if (senderConnections != null)
-        {
-            foreach (var connectionId in senderConnections)
             {
                 await _hubContext.Clients.Client(connectionId).ReceiveMessage(message);
             }

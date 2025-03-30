@@ -38,12 +38,11 @@ const Demand = () => {
 
 	useEffect(() => {
 		if (connection) {
-			connection.on("receiveMessage", (message) => {
-				console.log(
-					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-					message,
-					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-				);
+			console.log(
+				"Connection   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+				connection,
+			);
+			connection.on("ReceiveMessage", (message) => {
 				dispatch(messageReceived(message));
 			});
 
@@ -57,7 +56,7 @@ const Demand = () => {
 				});
 
 			return () => {
-				connection.off("receiveMessage");
+				connection.off("ReceiveMessage");
 			};
 		}
 	}, [connection, dispatch]);

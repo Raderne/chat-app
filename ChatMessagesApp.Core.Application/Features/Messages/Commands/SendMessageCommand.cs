@@ -26,6 +26,11 @@ public class SendMessageCommandHandler(
         try
         {
             var senderId = _currentUserService.UserId;
+            if (string.IsNullOrEmpty(senderId))
+            {
+                return Result<GetMessageDto>.Failure("User is not logged in");
+            }
+
             var convorsation = await _conversationService.GetByIdAsync(request.ConversationId);
 
             if (convorsation == null)
@@ -50,7 +55,8 @@ public class SendMessageCommandHandler(
                 (Guid)message.ConversationId,
                 message.SenderId,
                 message.Content,
-                message.Created));
+                message.Created,
+                message.CreatedBy));
         }
         catch (Exception)
         {

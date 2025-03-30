@@ -5,5 +5,13 @@ public record GetMessageDto(
     Guid ConversationId,
     string SenderId,
     string Content,
-    DateTime Created
+    DateTime Created,
+    string CreatedBy
+);
+
+public record GetConversationDto(
+    Guid Id,
+    Guid DemandId,
+    List<string> ParticipantIds,
+    List<GetMessageDto> Messages
 );

@@ -20,6 +20,15 @@ export const initializeSignalR = createAsyncThunk(
 				dispatch(notificationReceived(notification));
 			});
 
+			// connection.on("ReceiveMessage", (message) => {
+			// 	console.log(
+			// 		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+			// 		message,
+			// 		">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+			// 	);
+			// 	dispatch(messageReceived(message));
+			// });
+
 			await connection.start();
 			return connection;
 		} catch (error) {
