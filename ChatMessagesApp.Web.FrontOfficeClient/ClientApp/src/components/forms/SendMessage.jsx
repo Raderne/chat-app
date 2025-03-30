@@ -48,6 +48,12 @@ const SendMessage = ({ demandId, conversationId, setMessageData }) => {
 			]);
 			await sendMessage(values);
 			formik.resetForm();
+			setTimeout(() => {
+				const messagesContainer = document.getElementById("messages");
+				if (messagesContainer) {
+					messagesContainer.scrollTop = messagesContainer.scrollHeight;
+				}
+			}, 0);
 		} catch (error) {
 			console.error(error);
 		}

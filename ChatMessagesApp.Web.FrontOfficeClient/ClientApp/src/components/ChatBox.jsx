@@ -68,11 +68,19 @@ const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 				publishDate: new Date().toLocaleDateString(),
 			},
 		]);
+
+		// Scroll to the bottom of the messages container
+		setTimeout(() => {
+			const messagesContainer = document.getElementById("messages");
+			if (messagesContainer) {
+				messagesContainer.scrollTop = messagesContainer.scrollHeight;
+			}
+		}, 0);
 	}, [messages]);
 
 	return (
 		<>
-			<div className="border-[#C9C9C9] border-[1px] rounded-[9px] p-[20px] flex flex-col gap-[20px] h-full flex-grow-1 max-h-screen overflow-y-auto">
+			<div className="border-[#C9C9C9] border-[1px] rounded-[9px] p-[20px] flex flex-col gap-[20px] h-full flex-grow-1 max-h-[500px] overflow-y-auto">
 				<h5 className="text-center font-bold text-[16px]">Boite de dialogue</h5>
 				<p>{sendToId}</p>
 				<div
