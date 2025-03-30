@@ -5,13 +5,54 @@ import { getInitialsCharFromUsername } from "../utils/getInitialsCharFromFullNam
 import { useSelector } from "react-redux";
 import { selectMessages } from "../redux/selectors/notificationSelectors";
 
+const URL = import.meta.env.VITE_API_BASE_URL;
+
 const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 	const [messageData, setMessageData] = useState([]);
+	const [participantsIds, setParticipantsIds] = useState([]);
+	const [conversationId, setConversationId] = useState("");
 	let sendToId =
 		createdBy?.split(":")[1] == localStorage.getItem("userName")
 			? RecipientUserId
 			: createdBy?.split(":")[0];
 	const messages = useSelector(selectMessages);
+
+	useEffect(() => {
+		const getMessages = async () => {
+			try {
+				const response = await fetch(
+					`${URL}api/Application/demand/${demandId}/messages`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${localStorage.getItem("token")}`,
+						},
+					},
+				);
+				if (response.ok) {
+					const data = await response.json();
+					console.log(data, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+					setParticipantsIds(data?.participantsIds);
+					setConversationId(data?.id);
+					const messages = data?.messages.map((msg) => {
+						return {
+							grade: msg?.grade || "Moi",
+							userName: msg?.createdBy.split(":")[1],
+							message: msg?.content,
+							publishDate: new Date(msg?.created).toLocaleDateString(),
+						};
+					});
+					setMessageData(messages);
+				} else {
+					throw new Error("Failed to fetch messages");
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		getMessages();
+	}, [demandId]);
 
 	useEffect(() => {
 		// messages = ["test", "test2"];
@@ -27,11 +68,19 @@ const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 				publishDate: new Date().toLocaleDateString(),
 			},
 		]);
+
+		// Scroll to the bottom of the messages container
+		setTimeout(() => {
+			const messagesContainer = document.getElementById("messages");
+			if (messagesContainer) {
+				messagesContainer.scrollTop = messagesContainer.scrollHeight;
+			}
+		}, 0);
 	}, [messages]);
 
 	return (
 		<>
-			<div className="border-[#C9C9C9] border-[1px] rounded-[9px] p-[20px] flex flex-col gap-[20px] h-full flex-grow-1">
+			<div className="border-[#C9C9C9] border-[1px] rounded-[9px] p-[20px] flex flex-col gap-[20px] h-full flex-grow-1 max-h-[500px] overflow-y-auto">
 				<h5 className="text-center font-bold text-[16px]">Boite de dialogue</h5>
 				<p>{sendToId}</p>
 				<div
@@ -60,7 +109,7 @@ const ChatBox = ({ demandId, RecipientUserId, createdBy }) => {
 				</div>
 				<SendMessage
 					demandId={demandId}
-					sendTo={sendToId}
+					conversationId={conversationId}
 					setMessageData={setMessageData}
 				/>
 			</div>

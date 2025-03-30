@@ -6,9 +6,8 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { initializeSignalR } from "../redux/slices/notificationSlice";
-import { HubConnectionState } from "@microsoft/signalr";
 
 const signalRContext = createContext();
 
@@ -16,17 +15,24 @@ export const SignalRProvider = ({ children }) => {
 	const connectionRef = useRef(null);
 	const [retryCount, setRetryCount] = useState(0);
 	const dispatch = useDispatch();
-	const token = useSelector((state) => state.auth.token);
-	const connectionState = {
-		isInitializing: false,
-		isConnected: false,
-	};
+	const token = localStorage.getItem("token");
+	const [connection, setConnection] = useState(null);
 
 	const startConnection = useCallback(async () => {
+		if (!token) {
+			console.error("Token is missing. Cannot initialize SignalR connection.");
+			return;
+		}
 		try {
 			const action = await dispatch(initializeSignalR(token));
 			if (initializeSignalR.fulfilled.match(action)) {
 				connectionRef.current = action.payload;
+				setConnection(action.payload);
+
+				console.log(
+					"<<<<<< Connection established >>>>>>>>",
+					connectionRef.current,
+				);
 
 				connectionRef.current.onclose((error) => {
 					if (error) {
@@ -58,6 +64,7 @@ export const SignalRProvider = ({ children }) => {
 			if (connectionRef.current) {
 				connectionRef.current.stop();
 				connectionRef.current = null;
+				setConnection(null);
 			}
 		};
 	}, [token, startConnection]);
@@ -74,34 +81,12 @@ export const SignalRProvider = ({ children }) => {
 			window.removeEventListener("beforeunload", cleanupBeforeUnload);
 	}, []);
 
-	const safeInvoke = async (methodName, ...args) => {
-		if (!connectionRef.current) {
-			console.warn("Connection not initialized");
-			return;
-		}
-
-		try {
-			if (connectionRef.current.state === HubConnectionState.Disconnected) {
-				connectionState.isInitializing = true;
-				await connectionRef.current.start();
-				connectionState.isInitializing = false;
-			}
-
-			console.log("Invoking method:", methodName);
-			await connectionRef.current.invoke(methodName, ...args);
-		} catch (error) {
-			console.error("Error invoking method:", error);
-			if (!connectionState.isInitializing) {
-				connectionState.isConnected = false;
-			}
-		}
-	};
-
 	const handleRefresh = async () => {
 		if (connectionRef.current) {
 			try {
 				await connectionRef.current.stop();
 				connectionRef.current = null;
+				setConnection(null);
 				await startConnection();
 			} catch (error) {
 				console.error("Refresh connection error:", error);
@@ -112,8 +97,7 @@ export const SignalRProvider = ({ children }) => {
 	return (
 		<signalRContext.Provider
 			value={{
-				connection: connectionRef.current,
-				safeInvoke,
+				connection,
 				handleRefresh,
 			}}
 		>

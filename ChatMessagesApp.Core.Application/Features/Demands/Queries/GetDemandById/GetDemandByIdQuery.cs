@@ -11,12 +11,19 @@ public class GetDemandByIdQuery : IRequest<GetDemandsDto>
     public Guid Id { get; set; }
 }
 
-public class GetDemandByIdQueryHandler(IContext context) : IRequestHandler<GetDemandByIdQuery, GetDemandsDto>
+public class GetDemandByIdQueryHandler(
+    IContext context,
+    ICurrentUserService currentUserService,
+    IConversationService conversationService) : IRequestHandler<GetDemandByIdQuery, GetDemandsDto>
 {
     private readonly IContext _demandContext = context;
+    private readonly ICurrentUserService _currentUserService = currentUserService;
+    private readonly IConversationService _conversationService = conversationService;
 
     public async Task<GetDemandsDto> Handle(GetDemandByIdQuery request, CancellationToken cancellationToken)
     {
+        var loggedInUserId = _currentUserService.IsLoggedIn() ? _currentUserService.UserId : throw new UnauthorizedAccessException();
+
         var demand = await _demandContext.Demands.Where(d => d.Id == request.Id).Select(d => new GetDemandsDto()
         {
             Id = d.Id,
@@ -30,6 +37,16 @@ public class GetDemandByIdQueryHandler(IContext context) : IRequestHandler<GetDe
         if (demand == null)
         {
             throw new NotFoundException(nameof(Demand), request.Id);
+        }
+
+        var conversation = await _conversationService.GetByDemandIdAsync(request.Id)
+            ?? throw new NotFoundException(nameof(Conversation), request.Id);
+
+        var isParticipant = conversation.ParticipantIds.Contains(loggedInUserId);
+        if (!isParticipant)
+        {
+            conversation.ParticipantIds.Add(loggedInUserId);
+            await _conversationService.UpdateAsync(conversation, cancellationToken);
         }
 
         return demand;

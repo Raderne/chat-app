@@ -1,6 +1,6 @@
 import { Button, Layout, theme } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logout } from "../redux/slices/authSlice";
 import { NotificationOutlined } from "@ant-design/icons";
 import Notifications from "../components/Notification/Notifications";
@@ -28,7 +28,14 @@ const Dashboard = () => {
 		<Layout className="!min-h-screen">
 			<Header style={{ padding: "0 20px", background: colorBgContainer }}>
 				<div className="flex justify-between items-center h-full">
-					<h1 className="text-2xl font-bold">Dashboard</h1>
+					<h1 className="text-2xl font-bold">
+						<Link
+							className="text-[#164998]"
+							to={"/"}
+						>
+							Dashboard
+						</Link>
+					</h1>
 
 					<div className="flex items-center space-x-2">
 						<Button

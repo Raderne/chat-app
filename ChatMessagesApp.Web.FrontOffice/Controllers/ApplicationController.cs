@@ -43,7 +43,7 @@ public class ApplicationController(IMediator mediator, ISignalRService signalRSe
 
     [HttpGet("demand/{id}/messages")]
     [Authorize]
-    public async Task<ActionResult<List<GetMessageDto>>> GetDemandMessages(Guid id)
+    public async Task<ActionResult<GetConversationDto>> GetDemandMessages(Guid id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -56,6 +56,13 @@ public class ApplicationController(IMediator mediator, ISignalRService signalRSe
     {
         var result = await _mediator.Send(new SendMessageCommand(messageDto.DemandId, messageDto.Content, messageDto.ConversationId));
 
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpPost("addParticipant")]
+    public async Task<ActionResult> AddParticipant([FromBody] AddParticipantDto addParticipantDto)
+    {
+        var result = await _mediator.Send(new AddParticipantCommand(addParticipantDto.ConversationId, addParticipantDto.ParticipantId));
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 }

@@ -21,7 +21,13 @@ const Demand = () => {
 	useEffect(() => {
 		const getDemand = async () => {
 			try {
-				const response = await fetch(`${URL}/${id}`);
+				const response = await fetch(`${URL}/${id}`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				});
 				if (response.ok) {
 					const data = await response.json();
 					console.log(data);
@@ -38,12 +44,11 @@ const Demand = () => {
 
 	useEffect(() => {
 		if (connection) {
-			connection.on("receiveMessage", (message) => {
-				console.log(
-					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-					message,
-					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-				);
+			console.log(
+				"Connection   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+				connection,
+			);
+			connection.on("ReceiveMessage", (message) => {
 				dispatch(messageReceived(message));
 			});
 
@@ -57,7 +62,7 @@ const Demand = () => {
 				});
 
 			return () => {
-				connection.off("receiveMessage");
+				connection.off("ReceiveMessage");
 			};
 		}
 	}, [connection, dispatch]);
@@ -68,7 +73,7 @@ const Demand = () => {
 			<p>
 				id: {id} || created by : {demand?.createdBy?.split(":")[1]}
 			</p>
-			<div className="min-h-screen flex items-center justify-center">
+			<div className="flex items-center justify-center">
 				<ChatBox
 					demandId={id}
 					RecipientUserId={demand?.toUserId}

@@ -10,4 +10,10 @@ public class Conversation : BaseEntity<Guid>
     public List<string> ParticipantIds { get; set; } = new List<string>();
     public ICollection<Message> Messages { get; set; } = new List<Message>();
 
+    public Conversation(string title, Guid demandId, List<string> participantIds)
+    {
+        Title = title;
+        DemandId = demandId;
+        ParticipantIds = participantIds;
+    }
 }

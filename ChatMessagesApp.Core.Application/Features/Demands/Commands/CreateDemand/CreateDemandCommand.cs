@@ -27,6 +27,13 @@ public class CreateDemandCommandHandler(
         var demand = new Demand(request.Title, request.Description, request.NotifyUserId);
         _context.Demands.Add(demand);
 
+        var conversation = new Conversation(
+            request.Title,
+            demand.Id,
+            new List<string> { _currentUserService.UserId, request.NotifyUserId }
+            );
+        _context.Conversations.Add(conversation);
+
         var notification = new Notification()
         {
             UserId = request.NotifyUserId,
