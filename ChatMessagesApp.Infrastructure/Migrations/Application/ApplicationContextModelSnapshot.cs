@@ -66,7 +66,7 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
 
                     b.HasIndex("DemandId");
 
-                    b.ToTable("Conversations");
+                    b.ToTable("Conversations", (string)null);
                 });
 
             modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Demand", b =>
@@ -112,7 +112,7 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
 
                     b.HasKey("Id");
 
-                    b.ToTable("Demands");
+                    b.ToTable("Demands", (string)null);
                 });
 
             modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Message", b =>
@@ -181,7 +181,7 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
                     b.HasIndex("SenderId", "ConversationId")
                         .HasDatabaseName("IX_Message_SenderId_ConversationId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Notification", b =>
@@ -232,7 +232,7 @@ namespace ChatMessagesApp.Infrastructure.Migrations.Application
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("ChatMessagesApp.Core.Domain.Entities.Conversation", b =>

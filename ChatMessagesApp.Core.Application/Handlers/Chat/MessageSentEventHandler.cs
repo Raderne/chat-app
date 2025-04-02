@@ -28,12 +28,14 @@ public class MessageSentEventHandler(ISignalRService signalRService) : INotifica
         {
             if (participantId != message.SenderId)
             {
+                var notificationDto = new NotificationDto()
+                {
+                    Type = NotificationType.NewMessage,
+                    Message = message.CreatedBy.Split(":")[1] + " sent a message.",
+                    DocumentId = message.DemandId
+                };
                 // Send notification to other participants
-                await _notificationService.NotifyUserAsync(
-                    participantId,
-                    NotificationType.NewMessage,
-                    message.CreatedBy.Split(":")[1] + " sent a message.",
-                    message.DemandId);
+                await _notificationService.NotifyUserAsync(notificationDto, participantId);
 
                 await _notificationService.SendMessage(participantId, message.Content);
             }

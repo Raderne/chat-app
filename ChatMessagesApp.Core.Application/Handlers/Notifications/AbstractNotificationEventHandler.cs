@@ -1,7 +1,6 @@
 ﻿using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Application.Models.Notification;
 using ChatMessagesApp.Core.Domain.Common;
-using ChatMessagesApp.Core.Domain.Enums;
 using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Handlers;
@@ -21,15 +20,11 @@ public abstract class AbstractNotificationEventHandler<TEvent>
         var domainEvent = notification.DomainEvent;
 
         await _notificationService.NotifyUserAsync(
-            GetRecipientId(domainEvent),
-            GetNotificationType(),
-            GetNotificationMessage(domainEvent),
-            GetRequestId(domainEvent)
+            GetNotification(domainEvent),
+            GetRecipientId(domainEvent)
         );
     }
 
     protected abstract string GetRecipientId(TEvent domainEvent);
-    protected abstract NotificationType GetNotificationType();
-    protected abstract string GetNotificationMessage(TEvent domainEvent);
-    protected abstract Guid? GetRequestId(TEvent domainEvent);
+    protected abstract NotificationDto GetNotification(TEvent domainEvent);
 }

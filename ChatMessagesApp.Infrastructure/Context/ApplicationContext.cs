@@ -22,8 +22,6 @@ public class ApplicationContext(
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Ignore<DomainEvent>();
-
         modelBuilder.Entity<Message>()
             .HasIndex(m => m.MessageStatus)
             .HasDatabaseName("IX_Message_MessageStatus");
@@ -80,7 +78,7 @@ public class ApplicationContext(
                 }
             }
 
-            await PublishDomainEventsAsync();
+            //await PublishDomainEventsAsync();
             var result = await base.SaveChangesAsync(cancellationToken);
 
             return result;

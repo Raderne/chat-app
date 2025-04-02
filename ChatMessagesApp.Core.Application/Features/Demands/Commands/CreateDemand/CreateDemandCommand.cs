@@ -2,6 +2,7 @@
 using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Domain.Entities;
 using ChatMessagesApp.Core.Domain.Enums;
+using ChatMessagesApp.Core.Domain.Events;
 using MediatR;
 
 namespace ChatMessagesApp.Core.Application.Features.Demands.Commands.CreateDemand;
@@ -16,11 +17,13 @@ public class CreateDemandCommand : IRequest<CreateDemandDto>
 public class CreateDemandCommandHandler(
     ICurrentUserService currentUserService,
     IContext context,
+    IDomainEventService domainEventService,
     IMapper mapper) : IRequestHandler<CreateDemandCommand, CreateDemandDto>
 {
     private readonly IMapper _mapper = mapper;
     private readonly ICurrentUserService _currentUserService = currentUserService;
     private readonly IContext _context = context;
+    private readonly IDomainEventService _domainEventService = domainEventService;
 
     public async Task<CreateDemandDto> Handle(CreateDemandCommand request, CancellationToken cancellationToken)
     {
@@ -42,6 +45,8 @@ public class CreateDemandCommandHandler(
             RelatedDocumentId = demand.Id
         };
         _context.Notifications.Add(notification);
+
+        await _domainEventService.Publish(new DemandCreatedEvent(demand, notification));
 
         await _context.SaveChangesAsync(cancellationToken);
 

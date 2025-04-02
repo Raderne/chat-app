@@ -31,17 +31,9 @@ public class SignalRService(
         await _hubContext.Clients.Group(role).ReceiveNotification(notification);
     }
 
-    public async Task NotifyUserAsync(string userId, NotificationType type, string message, Guid? documentId = null)
+    public async Task NotifyUserAsync(NotificationDto notification, string userId)
     {
         ArgumentException.ThrowIfNullOrEmpty(userId, nameof(userId));
-
-        var notification = new NotificationDto()
-        {
-            Type = type,
-            Message = message,
-            DocumentId = documentId,
-            TimeStamp = DateTime.UtcNow
-        };
 
         var connectionIds = _userConnections.GetConnections(userId);
         foreach (var connection in connectionIds)

@@ -1,8 +1,8 @@
-﻿using ChatMessagesApp.Core.Domain.Events;
+﻿using ChatMessagesApp.Core.Domain.Common;
 
 namespace ChatMessagesApp.Core.Domain.Entities;
 
-public class Demand : EntityWithDomainEvents<Guid>
+public class Demand : BaseEntity<Guid>
 {
     public string Title { get; set; }
     public string Description { get; set; }
@@ -14,7 +14,7 @@ public class Demand : EntityWithDomainEvents<Guid>
         Description = description;
         ToUserId = toUserId;
 
-        AddDomainEvent(new DemandCreatedEvent(this));
+        //AddDomainEvent(new DemandCreatedEvent(this));
     }
 
     //private readonly List<DomainEvent> _domainEvents = new();

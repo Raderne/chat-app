@@ -1,5 +1,5 @@
 ﻿using ChatMessagesApp.Core.Application.Interfaces;
-using ChatMessagesApp.Core.Domain.Enums;
+using ChatMessagesApp.Core.Application.Models.Notification;
 using ChatMessagesApp.Core.Domain.Events;
 
 namespace ChatMessagesApp.Core.Application.Handlers.Notifications;
@@ -11,15 +11,17 @@ public class DemandCreatedEventHandler
     {
     }
 
-    protected override string GetNotificationMessage(DemandCreatedEvent domainEvent)
+    protected override NotificationDto GetNotification(DemandCreatedEvent domainEvent)
     {
-        var demand = domainEvent.CreatedDemand;
-        return $"Demand {demand.Title} has been created.";
+        return new NotificationDto
+        {
+            Type = domainEvent.Notification.Type,
+            Message = domainEvent.Notification.Message,
+            DocumentId = domainEvent.CreatedDemand.Id,
+            TimeStamp = domainEvent.CreatedDemand.Created
+        };
     }
-
-    protected override NotificationType GetNotificationType() => NotificationType.DemandCreated;
 
     protected override string GetRecipientId(DemandCreatedEvent domainEvent) => domainEvent.CreatedDemand.ToUserId;
 
-    protected override Guid? GetRequestId(DemandCreatedEvent domainEvent) => domainEvent.CreatedDemand.Id;
 }
