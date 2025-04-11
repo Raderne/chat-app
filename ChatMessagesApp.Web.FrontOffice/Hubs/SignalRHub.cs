@@ -1,14 +1,28 @@
-﻿using ChatMessagesApp.Core.Application.Interfaces;
+﻿using ChatMessagesApp.Core.Application.Features;
+using ChatMessagesApp.Core.Application.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatMessagesApp.Web.FrontOffice.Hubs;
 
 public class SignalRHub(
     IUserConnectionManager userConnectionManager,
-    ICurrentUserService currentUser) : Hub<IHubClient>
+    ICurrentUserService currentUser,
+    IMediator mediator) : Hub<IHubClient>
 {
     private readonly IUserConnectionManager _connectionManager = userConnectionManager;
     private readonly ICurrentUserService _currentUser = currentUser;
+    private readonly IMediator _mediator = mediator;
+
+    public async Task MarkAsRead(List<Guid> notificationIds)
+    {
+        var userId = _currentUser?.IsLoggedIn() == true ? _currentUser.UserId : null;
+        if (userId == null)
+        {
+            throw new ArgumentNullException(nameof(_currentUser.UserId));
+        }
+        await _mediator.Send(new MarkNotificationsAsReadCommand(notificationIds, userId!));
+    }
 
     public override async Task OnConnectedAsync()
     {

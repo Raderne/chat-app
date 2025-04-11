@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="$(MicrosoftAspNetCorePackageVersion)" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.14" />
 		<!--<PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />-->
 	</ItemGroup>
 

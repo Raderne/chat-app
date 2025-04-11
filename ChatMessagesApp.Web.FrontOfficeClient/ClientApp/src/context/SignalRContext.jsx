@@ -94,11 +94,25 @@ export const SignalRProvider = ({ children }) => {
 		}
 	};
 
+	const markAsRead = async (notificationIds) => {
+		console.log("<<<<<<<<<<<<<< connection", connection);
+		if (!connection) {
+			console.error("Connection is not established.");
+			return;
+		}
+		console.log(
+			"Marking notifications as read: <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+			notificationIds,
+		);
+		await connection?.invoke("MarkAsRead", notificationIds);
+	};
+
 	return (
 		<signalRContext.Provider
 			value={{
 				connection,
 				handleRefresh,
+				markAsRead,
 			}}
 		>
 			{children}

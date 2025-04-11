@@ -3,8 +3,10 @@ using ChatMessagesApp.Core.Application.Features.Demands.Commands.CreateDemand;
 using ChatMessagesApp.Core.Application.Features.Demands.Queries;
 using ChatMessagesApp.Core.Application.Features.Messages.Commands;
 using ChatMessagesApp.Core.Application.Features.Messages.Queries;
+using ChatMessagesApp.Core.Application.Features.Notifications.Queries.GetNotifications;
 using ChatMessagesApp.Core.Application.Interfaces;
 using ChatMessagesApp.Core.Application.Models;
+using ChatMessagesApp.Core.Application.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,5 +66,19 @@ public class ApplicationController(IMediator mediator, ISignalRService signalRSe
     {
         var result = await _mediator.Send(new AddParticipantCommand(addParticipantDto.ConversationId, addParticipantDto.ParticipantId));
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+    }
+
+    [HttpGet("notifications")]
+    [Authorize]
+    public async Task<ActionResult<PaginatedResult<GetAllNotificationsDto>>> GetNotifications([FromQuery] int pageNumber, [FromQuery] int pageSize)
+    {
+        var notifications = await _mediator.Send(new GetAllNotificationsQuery() { PageNumber = pageNumber, PageSize = pageSize });
+
+        if (notifications == null)
+        {
+            return NotFound("No notifications found.");
+        }
+
+        return Ok(notifications);
     }
 }
